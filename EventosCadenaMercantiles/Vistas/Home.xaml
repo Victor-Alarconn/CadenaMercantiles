@@ -1,0 +1,25 @@
+﻿<Window x:Class="EventosCadenaMercantiles.Vistas.Home"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:EventosCadenaMercantiles.Vistas"
+        mc:Ignorable="d" 
+        d:DesignHeight="450" d:DesignWidth="800"
+        Title="Home">
+
+    <Grid x:Name="contenedor">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Botón para seleccionar archivo -->
+        <Button x:Name="BtnOpenFile" Width="100" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center" Background="Transparent" BorderBrush="White" Click="BtnOpenFile_Click">
+            <Image Source="pack://application:,,,/Imagenes/upload.png" Stretch="Uniform"/>
+        </Button>
+
+        <!-- Etiqueta para mostrar el nombre del archivo seleccionado -->
+        <Label x:Name="LbNombreArchivo" Content="Cargue el archivo .xml" HorizontalAlignment="Left" Margin="75,0,0,0" Width="315" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Height="26" Grid.Row="1"/>
+    </Grid>
+</Window>
