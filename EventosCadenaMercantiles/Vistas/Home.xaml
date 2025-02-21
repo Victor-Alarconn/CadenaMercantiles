@@ -81,10 +81,10 @@
             </Grid.ColumnDefinitions>
 
             <!-- Botón para 'Evento' -->
-            <Button x:Name="BtnEvento" Content="Evento" Style="{StaticResource ButtonStyle}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="160" Height="40" Click="BtnEvento_Click"/>
+            <Button x:Name="BtnEvento" Content="Evento" Style="{StaticResource ButtonStyle}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="160" Height="40" Click="ShowEventoOptions"/>
 
             <!-- Botón para 'CoRechazo' -->
-            <Button x:Name="BtnCoRechazo" Content="CoRechazo" Style="{StaticResource ButtonStyle}" HorizontalAlignment="Left" Margin="226,0,0,0" VerticalAlignment="Top" Width="160" Height="40" Click="BtnCoRechazo_Click"/>
+            <Button x:Name="BtnCoRechazo" Content="CoRechazo" Style="{StaticResource ButtonStyle}" HorizontalAlignment="Left" Margin="226,0,0,0" VerticalAlignment="Top" Width="160" Height="40" Click="ShowCoRechazoOptions"/>
         </Grid>
 
         <!-- Botones de acción -->

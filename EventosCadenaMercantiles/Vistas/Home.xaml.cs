@@ -76,24 +76,45 @@ namespace EventosCadenaMercantiles.Vistas
 
 
 
+
+        // Mostrar las opciones para "Evento"
+        private void ShowEventoOptions(object sender, RoutedEventArgs e)
+        {
+            // Alternar la visibilidad del PopupEvento
+            PopupEvento.IsOpen = !PopupEvento.IsOpen;
+        }
+
+        // Mostrar las opciones para "CoRechazo"
+        private void ShowCoRechazoOptions(object sender, RoutedEventArgs e)
+        {
+            // Alternar la visibilidad del PopupCoRechazo
+            PopupCoRechazo.IsOpen = !PopupCoRechazo.IsOpen;
+        }
+
+
+
         // Manejar el clic en el 'Evento' y actualizar el texto del botón
         private void MenuItem_Evento_Click(object sender, RoutedEventArgs e)
         {
-            // Verificamos que el clic se haya registrado correctamente
-            MessageBox.Show("Evento seleccionado: " + (sender as MenuItem).Header);
+            MenuItem item = (MenuItem)sender;
 
             // Cambiar el contenido del botón de Evento
-            BtnEvento.Content = (sender as MenuItem).Header.ToString();
+            BtnEvento.Content = item.Header.ToString();
+
+            // Cerrar el Popup
+            PopupEvento.IsOpen = false;
         }
 
         // Manejar el clic en el 'CoRechazo' y actualizar el texto del botón
         private void MenuItem_CoRechazo_Click(object sender, RoutedEventArgs e)
         {
-            // Verificamos que el clic se haya registrado correctamente
-            MessageBox.Show("CoRechazo seleccionado: " + (sender as MenuItem).Header);
+            MenuItem item = (MenuItem)sender;
 
             // Cambiar el contenido del botón de CoRechazo
-            BtnCoRechazo.Content = (sender as MenuItem).Header.ToString();
+            BtnCoRechazo.Content = item.Header.ToString();
+
+            // Cerrar el Popup
+            PopupCoRechazo.IsOpen = false;
         }
 
 

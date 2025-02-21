@@ -1,7 +1,7 @@
 ﻿<Application x:Class="EventosCadenaMercantiles.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             StartupUri="Vistas/ActivacionVista.xaml">
+             StartupUri="Vistas/Home.xaml">
     <Application.Resources>
         <!-- Recursos compartidos entre todas las ventanas -->
     </Application.Resources>
