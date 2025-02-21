@@ -13,6 +13,9 @@ namespace EventosCadenaMercantiles.Vistas
         public Home()
         {
             InitializeComponent();
+
+            // Asignar un controlador de eventos para detectar clics fuera del Popup
+            this.PreviewMouseDown += (s, e) => ClosePopupOnClickOutside(e);
         }
 
         // Método para abrir el archivo seleccionado
