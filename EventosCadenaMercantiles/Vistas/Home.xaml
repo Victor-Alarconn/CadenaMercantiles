@@ -5,21 +5,122 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:EventosCadenaMercantiles.Vistas"
         mc:Ignorable="d" 
-        d:DesignHeight="450" d:DesignWidth="800"
+        d:DesignHeight="450" d:DesignWidth="1200"
         Title="Home">
+
+    <Window.Resources>
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#4CAF50"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <!-- Sombra para el botón -->
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Gray" Direction="270" BlurRadius="10" ShadowDepth="5"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
+            <Setter Property="Width" Value="300"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Background" Value="#F2F2F2"/>
+            <Setter Property="BorderBrush" Value="#DDDDDD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Gray" Direction="270" BlurRadius="5" ShadowDepth="3"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="LabelStyle" TargetType="Label">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#333333"/>
+        </Style>
+    </Window.Resources>
 
     <Grid x:Name="contenedor">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" MinHeight="185"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
 
         <!-- Botón para seleccionar archivo -->
-        <Button x:Name="BtnOpenFile" Width="100" Height="100" HorizontalAlignment="Center" VerticalAlignment="Center" Background="Transparent" BorderBrush="White" Click="BtnOpenFile_Click">
-            <Image Source="pack://application:,,,/Imagenes/upload.png" Stretch="Uniform"/>
+        <Button x:Name="BtnOpenFile" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderBrush="White" Click="BtnOpenFile_Click" Margin="20,10,0,0">
+            <Image Source="pack://application:,,,/Imagenes/upload.png" Stretch="UniformToFill"/>
         </Button>
 
         <!-- Etiqueta para mostrar el nombre del archivo seleccionado -->
-        <Label x:Name="LbNombreArchivo" Content="Cargue el archivo .xml" HorizontalAlignment="Left" Margin="75,0,0,0" Width="315" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Height="26" Grid.Row="1"/>
+        <Label x:Name="LbNombreArchivo" Content="Cargue el archivo .xml" HorizontalAlignment="Left" Margin="80,0,0,0" Width="227" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Height="26"/>
+
+        <!-- Otros controles (como ComboBox y botones) -->
+        <Grid Grid.Row="1" Margin="20,20,20,20" Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Botón para 'Evento' -->
+            <Button x:Name="BtnEvento" Content="Evento" Style="{StaticResource ButtonStyle}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="160" Height="40" Click="BtnEvento_Click"/>
+
+            <!-- Botón para 'CoRechazo' -->
+            <Button x:Name="BtnCoRechazo" Content="CoRechazo" Style="{StaticResource ButtonStyle}" HorizontalAlignment="Left" Margin="226,0,0,0" VerticalAlignment="Top" Width="160" Height="40" Click="BtnCoRechazo_Click"/>
+        </Grid>
+
+        <!-- Botones de acción -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="340,10,0,0" Height="50" Width="260">
+            <Button Content="Refrescar" Style="{StaticResource ButtonStyle}" Click="BtnRefresh_Click"/>
+            <Button Content="Terminar" Style="{StaticResource ButtonStyle}" Click="BtnExit_Click"/>
+        </StackPanel>
+
+        <!-- Botón para enviar -->
+        <Button x:Name="BtnEnviar" Width="65" Height="64" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderBrush="White" Click="BtnEnvioPostEnventoMercantil_Click" Margin="15,65,0,0">
+            <Image Source="pack://application:,,,/Imagenes/send.png" Stretch="Uniform" Height="64" Width="65"/>
+        </Button>
+
+        <!-- Modal para Evento -->
+        <Popup x:Name="PopupEvento" IsOpen="False" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="200">
+            <Border Background="White" BorderBrush="Black" BorderThickness="2">
+                <StackPanel>
+                    <Button Content="ACUSE_DOCUMENTO" Click="MenuItem_Evento_Click"/>
+                    <Button Content="RECIBO_SERVICIO" Click="MenuItem_Evento_Click"/>
+                    <Button Content="ACEPTACION_EXPRESA" Click="MenuItem_Evento_Click"/>
+                    <Button Content="RECLAMO" Click="MenuItem_Evento_Click"/>
+                </StackPanel>
+            </Border>
+        </Popup>
+
+        <!-- Modal para CoRechazo -->
+        <Popup x:Name="PopupCoRechazo" IsOpen="False" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="200">
+            <Border Background="White" BorderBrush="Black" BorderThickness="2">
+                <StackPanel>
+                    <Button Content="DOCUMENTO_CON_INCONSISTENCIAS" Click="MenuItem_CoRechazo_Click"/>
+                    <Button Content="MERCANCIA_NO_ENTREGADA_TOTALMENTE" Click="MenuItem_CoRechazo_Click"/>
+                    <Button Content="MERCANCIA_NO_ENTREGADA_PARCIALMENTE" Click="MenuItem_CoRechazo_Click"/>
+                    <Button Content="SERVICIO_NO_PRESTADO" Click="MenuItem_CoRechazo_Click"/>
+                </StackPanel>
+            </Border>
+        </Popup>
+
     </Grid>
 </Window>
