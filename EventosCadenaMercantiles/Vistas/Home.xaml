@@ -66,6 +66,10 @@
     </Window.Resources>
 
     <Grid x:Name="contenedor">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="7*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" MinHeight="185"/>
             <RowDefinition/>
@@ -77,10 +81,10 @@
         </Button>
 
         <!-- Etiqueta para mostrar el nombre del archivo seleccionado -->
-        <Label x:Name="LbNombreArchivo" Content="Cargue el archivo .xml" HorizontalAlignment="Left" Margin="80,0,0,0" Width="227" FontWeight="Bold" Foreground="Green" VerticalAlignment="Center" Height="26"/>
+        <Label x:Name="LbNombreArchivo" Content="Cargue el archivo .xml" HorizontalAlignment="Left" Margin="80,0,0,0" Width="227" FontWeight="Bold" Foreground="Green" VerticalAlignment="Center" Height="26" Grid.ColumnSpan="2"/>
 
         <!-- Otros controles (como ComboBox y botones) -->
-        <Grid Grid.Row="1" Margin="20,20,20,20" Grid.ColumnSpan="3">
+        <Grid Grid.Row="1" Margin="20,20,20,20" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -94,7 +98,7 @@
         </Grid>
 
         <!-- Botones de acción -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="340,10,0,0" Height="50" Width="260">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="190,10,0,0" Height="50" Width="260" Grid.Column="1">
             <Button Content="Refrescar" Style="{StaticResource ButtonStyle}" Click="BtnRefresh_Click"/>
             <Button Content="Terminar" Style="{StaticResource ButtonStyle}" Click="BtnExit_Click"/>
         </StackPanel>
@@ -105,7 +109,7 @@
         </Button>
 
         <!-- Modal para Evento -->
-        <Popup x:Name="PopupEvento" IsOpen="False" Width="200" Height="200" HorizontalOffset="0" VerticalOffset="0">
+        <Popup x:Name="PopupEvento" IsOpen="False" Width="200" Height="200" HorizontalOffset="0" VerticalOffset="0" Grid.Column="1" Margin="350,0,500,234" Grid.RowSpan="2">
             <Border Background="White" BorderBrush="Black" BorderThickness="2">
                 <StackPanel>
                     <Button Content="ACUSE_DOCUMENTO" Click="MenuItem_Evento_Click"/>
@@ -117,7 +121,7 @@
         </Popup>
 
         <!-- Modal para CoRechazo -->
-        <Popup x:Name="PopupCoRechazo" IsOpen="False" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="200">
+        <Popup x:Name="PopupCoRechazo" IsOpen="False" HorizontalAlignment="Left" VerticalAlignment="Center" Width="200" Height="200" Grid.Column="1" Margin="350,0,0,0">
             <Border Background="White" BorderBrush="Black" BorderThickness="2">
                 <StackPanel>
                     <Button Content="DOCUMENTO_CON_INCONSISTENCIAS" Click="MenuItem_CoRechazo_Click"/>
