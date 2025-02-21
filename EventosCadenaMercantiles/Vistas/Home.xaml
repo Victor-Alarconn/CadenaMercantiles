@@ -77,7 +77,7 @@
         </Button>
 
         <!-- Etiqueta para mostrar el nombre del archivo seleccionado -->
-        <Label x:Name="LbNombreArchivo" Content="Cargue el archivo .xml" HorizontalAlignment="Left" Margin="80,0,0,0" Width="227" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Height="26"/>
+        <Label x:Name="LbNombreArchivo" Content="Cargue el archivo .xml" HorizontalAlignment="Left" Margin="80,0,0,0" Width="227" FontWeight="Bold" Foreground="Green" VerticalAlignment="Center" Height="26"/>
 
         <!-- Otros controles (como ComboBox y botones) -->
         <Grid Grid.Row="1" Margin="20,20,20,20" Grid.ColumnSpan="3">
