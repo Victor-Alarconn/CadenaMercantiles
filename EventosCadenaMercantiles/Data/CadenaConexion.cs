@@ -1,62 +1,76 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows;
 
-//namespace EventosCadenaMercantiles.Datos
-//{
-//    public class CadenaConexion
-//    {
-//        private static string archivoConexion = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "env.txt");
+namespace EventosCadenaMercantiles.Datos
+{
+    public class CadenaConexion
+    {
+        private static readonly string archivoConexion = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "env.txt");
 
-//        // Método para leer la configuración de la conexión desde el archivo
-//        public static List<string> ReadConexion()
-//        {
-//            List<string> con = new();
+        // Método para leer la configuración de la conexión desde el archivo
+        public static List<string> ReadConexion()
+        {
+            List<string> con = new List<string>();
 
-//            try
-//            {
-//                // Verificar si el archivo existe
-//                if (File.Exists(archivoConexion))
-//                {
-//                    using (StreamReader sr = new(archivoConexion))
-//                    {
-//                        con.Add(sr.ReadLine());
-//                        con.Add(sr.ReadLine());
-//                        con.Add(sr.ReadLine());
-//                    }
-//                }
-//                else
-//                {
-//                    throw new FileNotFoundException("El archivo de configuración no se encuentra.");
-//                }
-//            }
-//            catch (Exception ex)
-//            {
-//                // Manejo de errores (archivo no encontrado o problemas al leerlo)
-//                Console.WriteLine($"Error al leer el archivo de configuración: {ex.Message}");
-//            }
+            try
+            {
+                if (!File.Exists(archivoConexion))
+                {
+                    MessageBox.Show("El archivo de configuración inicial no existe. Se requiere configuración.",
+                                    "Error de configuración", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return con; // Devuelve lista vacía
+                }
 
-//            return con;
-//        }
+                using (StreamReader sr = new StreamReader(archivoConexion))
+                {
+                    string linea;
+                    while ((linea = sr.ReadLine()) != null)
+                    {
+                        con.Add(linea);
+                    }
+                }
 
-//        // Método para escribir la configuración de la conexión en el archivo
-//        public static void WriteConexion(string ip, string baseda, string codigo)
-//        {
-//            try
-//            {
-//                using (StreamWriter sw = new(archivoConexion))
-//                {
-//                    // Escribir las líneas de configuración en el archivo
-//                    sw.WriteLine(ip);
-//                    sw.WriteLine(baseda);
-//                    sw.WriteLine(codigo);
-//                }
-//            }
-//            catch (Exception ex)
-//            {
-//                // Manejo de errores (problemas al escribir el archivo)
-//                Console.WriteLine($"Error al escribir en el archivo de configuración: {ex.Message}");
-//            }
-//        }
-//    }
-//}
+                // Validar si el archivo tiene los datos completos
+                if (con.Count < 4)
+                {
+                    MessageBox.Show("El archivo de configuración está incompleto. Verifique los datos.",
+                                    "Error de configuración", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return con; 
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al leer el archivo de configuración: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            return con;
+        }
+
+
+
+
+        // Método para escribir la configuración de la conexión en el archivo
+        public static void WriteConexion(string ip, string baseda, string usuario, string clave)
+        {
+            try
+            {
+                using (StreamWriter sw = new StreamWriter(archivoConexion))
+                {
+                    sw.WriteLine(usuario);
+                    sw.WriteLine(clave);
+                    sw.WriteLine(ip);
+                    sw.WriteLine(baseda);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al escribir en el archivo de configuración: {ex.Message}");
+            }
+        }
+
+
+    }
+}
