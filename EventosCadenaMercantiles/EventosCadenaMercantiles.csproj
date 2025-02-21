@@ -108,6 +108,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controlador\HomeController.cs" />
     <Compile Include="Data\CadenaConexion.cs" />
     <Compile Include="Vistas\ActivacionVista.xaml.cs">
       <DependentUpon>ActivacionVista.xaml</DependentUpon>
@@ -181,7 +182,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controlador\" />
     <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>

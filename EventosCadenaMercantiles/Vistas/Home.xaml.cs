@@ -1,7 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Windows;
 using Microsoft.Win32;
+using System.IO;
+using System.Windows.Controls;
+
 
 namespace EventosCadenaMercantiles.Vistas
 {
@@ -50,5 +52,52 @@ namespace EventosCadenaMercantiles.Vistas
                 MessageBox.Show($"Error al procesar el archivo: {ex.Message}");
             }
         }
+
+        // Método para el botón "Refrescar"
+        private void BtnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            // Lógica para refrescar la vista
+            MessageBox.Show("Vista refrescada.");
+        }
+
+        // Método para el botón "Terminar"
+        private void BtnExit_Click(object sender, RoutedEventArgs e)
+        {
+            // Cerrar la ventana
+            this.Close();
+        }
+
+        // Método para el botón "Enviar"
+        private void BtnEnvioPostEnventoMercantil_Click(object sender, RoutedEventArgs e)
+        {
+            // Lógica para enviar el archivo XML o realizar otra acción
+            MessageBox.Show("Enviando el documento XML...");
+        }
+
+
+
+        // Manejar el clic en el 'Evento' y actualizar el texto del botón
+        private void MenuItem_Evento_Click(object sender, RoutedEventArgs e)
+        {
+            // Verificamos que el clic se haya registrado correctamente
+            MessageBox.Show("Evento seleccionado: " + (sender as MenuItem).Header);
+
+            // Cambiar el contenido del botón de Evento
+            BtnEvento.Content = (sender as MenuItem).Header.ToString();
+        }
+
+        // Manejar el clic en el 'CoRechazo' y actualizar el texto del botón
+        private void MenuItem_CoRechazo_Click(object sender, RoutedEventArgs e)
+        {
+            // Verificamos que el clic se haya registrado correctamente
+            MessageBox.Show("CoRechazo seleccionado: " + (sender as MenuItem).Header);
+
+            // Cambiar el contenido del botón de CoRechazo
+            BtnCoRechazo.Content = (sender as MenuItem).Header.ToString();
+        }
+
+
+
+
     }
 }
