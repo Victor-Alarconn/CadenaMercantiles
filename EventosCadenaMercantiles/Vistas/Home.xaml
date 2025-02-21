@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:EventosCadenaMercantiles.Vistas"
         mc:Ignorable="d" 
         d:DesignHeight="450" d:DesignWidth="1200"
-        Title="Home">
+        Title="Home"
+        MouseDown="Window_MouseDown">
 
     <Window.Resources>
         <Style x:Key="ButtonStyle" TargetType="Button">
@@ -110,7 +111,6 @@
             </Border>
         </Popup>
 
-
         <!-- Modal para CoRechazo -->
         <Popup x:Name="PopupCoRechazo" IsOpen="False" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="200">
             <Border Background="White" BorderBrush="Black" BorderThickness="2">
@@ -122,6 +122,6 @@
                 </StackPanel>
             </Border>
         </Popup>
-
     </Grid>
+    
 </Window>

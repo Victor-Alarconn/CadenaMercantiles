@@ -3,6 +3,7 @@ using System.Windows;
 using Microsoft.Win32;
 using System.IO;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 
 namespace EventosCadenaMercantiles.Vistas
@@ -74,13 +75,21 @@ namespace EventosCadenaMercantiles.Vistas
             MessageBox.Show("Enviando el documento XML...");
         }
 
+        private void ClosePopupOnClickOutside(MouseButtonEventArgs e)
+        {
+            // Si el clic no ocurrió dentro del Popup
+            if (!PopupEvento.IsMouseOver && !PopupCoRechazo.IsMouseOver)
+            {
+                PopupEvento.IsOpen = false;
+                PopupCoRechazo.IsOpen = false;
+            }
+        }
 
 
 
         // Mostrar las opciones para "Evento"
         private void ShowEventoOptions(object sender, RoutedEventArgs e)
         {
-            // Obtener la posición del botón
             var button = (Button)sender;
             var position = button.TransformToAncestor(this).Transform(new Point(0, 0));
 
@@ -92,10 +101,10 @@ namespace EventosCadenaMercantiles.Vistas
             PopupEvento.IsOpen = !PopupEvento.IsOpen;
         }
 
+
         // Mostrar las opciones para "CoRechazo"
         private void ShowCoRechazoOptions(object sender, RoutedEventArgs e)
         {
-            // Obtener la posición del botón
             var button = (Button)sender;
             var position = button.TransformToAncestor(this).Transform(new Point(0, 0));
 
@@ -106,7 +115,6 @@ namespace EventosCadenaMercantiles.Vistas
             // Alternar la visibilidad del PopupCoRechazo
             PopupCoRechazo.IsOpen = !PopupCoRechazo.IsOpen;
         }
-
 
 
 
@@ -132,6 +140,24 @@ namespace EventosCadenaMercantiles.Vistas
 
             // Cerrar el Popup
             PopupCoRechazo.IsOpen = false;
+        }
+
+
+
+        // Método para manejar el clic en la ventana y cerrar los Popup si se hace clic fuera
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            // Si el clic ocurrió fuera del PopupEvento y el Popup está abierto, cerramos el Popup
+            if (PopupEvento.IsOpen && !PopupEvento.IsMouseOver)
+            {
+                PopupEvento.IsOpen = false;
+            }
+
+            // Si el clic ocurrió fuera del PopupCoRechazo y el Popup está abierto, cerramos el Popup
+            if (PopupCoRechazo.IsOpen && !PopupCoRechazo.IsMouseOver)
+            {
+                PopupCoRechazo.IsOpen = false;
+            }
         }
 
 
