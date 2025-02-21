@@ -99,7 +99,7 @@
         </Button>
 
         <!-- Modal para Evento -->
-        <Popup x:Name="PopupEvento" IsOpen="False" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="200">
+        <Popup x:Name="PopupEvento" IsOpen="False" Width="200" Height="200" HorizontalOffset="0" VerticalOffset="0">
             <Border Background="White" BorderBrush="Black" BorderThickness="2">
                 <StackPanel>
                     <Button Content="ACUSE_DOCUMENTO" Click="MenuItem_Evento_Click"/>
@@ -109,6 +109,7 @@
                 </StackPanel>
             </Border>
         </Popup>
+
 
         <!-- Modal para CoRechazo -->
         <Popup x:Name="PopupCoRechazo" IsOpen="False" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200" Height="200">

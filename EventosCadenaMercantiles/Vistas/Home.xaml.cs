@@ -80,6 +80,14 @@ namespace EventosCadenaMercantiles.Vistas
         // Mostrar las opciones para "Evento"
         private void ShowEventoOptions(object sender, RoutedEventArgs e)
         {
+            // Obtener la posición del botón
+            var button = (Button)sender;
+            var position = button.TransformToAncestor(this).Transform(new Point(0, 0));
+
+            // Establecer las posiciones del Popup
+            PopupEvento.HorizontalOffset = position.X;  // Colocarlo horizontalmente al lado del botón
+            PopupEvento.VerticalOffset = position.Y + button.ActualHeight; // Colocarlo justo debajo del botón
+
             // Alternar la visibilidad del PopupEvento
             PopupEvento.IsOpen = !PopupEvento.IsOpen;
         }
@@ -87,9 +95,18 @@ namespace EventosCadenaMercantiles.Vistas
         // Mostrar las opciones para "CoRechazo"
         private void ShowCoRechazoOptions(object sender, RoutedEventArgs e)
         {
+            // Obtener la posición del botón
+            var button = (Button)sender;
+            var position = button.TransformToAncestor(this).Transform(new Point(0, 0));
+
+            // Establecer las posiciones del Popup
+            PopupCoRechazo.HorizontalOffset = position.X;  // Colocarlo horizontalmente al lado del botón
+            PopupCoRechazo.VerticalOffset = position.Y + button.ActualHeight; // Colocarlo justo debajo del botón
+
             // Alternar la visibilidad del PopupCoRechazo
             PopupCoRechazo.IsOpen = !PopupCoRechazo.IsOpen;
         }
+
 
 
 
