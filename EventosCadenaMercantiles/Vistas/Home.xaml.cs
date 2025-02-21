@@ -21,10 +21,7 @@ namespace EventosCadenaMercantiles.Vistas
         // Método para abrir el archivo seleccionado
         private void BtnOpenFile_Click(object sender, RoutedEventArgs e)
         {
-            // Crear una instancia del cuadro de diálogo para seleccionar archivos
             OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            // Establecer el filtro para mostrar solo archivos .xml
             openFileDialog.Filter = "Archivos XML (*.xml)|*.xml";
 
             // Mostrar el cuadro de diálogo y verificar si se ha seleccionado un archivo
@@ -45,7 +42,7 @@ namespace EventosCadenaMercantiles.Vistas
         private void ProcessXmlFile(string filePath)
         {
             // Lógica para procesar el archivo XML
-            // Por ejemplo, leer el archivo y realizar acciones según el contenido
+          
             try
             {
                 // Aquí agregas tu lógica de procesamiento del archivo XML

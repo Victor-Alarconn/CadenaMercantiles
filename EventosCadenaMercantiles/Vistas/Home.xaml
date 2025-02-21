@@ -9,6 +9,11 @@
         Title="Home"
         MouseDown="Window_MouseDown">
 
+    <Window.Background>
+        <ImageBrush ImageSource="pack://application:,,,/Imagenes/Fondo.png" Stretch="UniformToFill"/>
+    </Window.Background>
+
+
     <Window.Resources>
         <Style x:Key="ButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#4CAF50"/>
@@ -67,8 +72,8 @@
         </Grid.RowDefinitions>
 
         <!-- Botón para seleccionar archivo -->
-        <Button x:Name="BtnOpenFile" Width="50" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderBrush="White" Click="BtnOpenFile_Click" Margin="20,10,0,0">
-            <Image Source="pack://application:,,,/Imagenes/upload.png" Stretch="UniformToFill"/>
+        <Button x:Name="BtnOpenFile" Width="65" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderBrush="White" Click="BtnOpenFile_Click" Margin="15,10,0,0">
+            <Image Source="pack://application:,,,/Imagenes/upload.png" Stretch="UniformToFill" Height="45" Width="50"/>
         </Button>
 
         <!-- Etiqueta para mostrar el nombre del archivo seleccionado -->
@@ -96,7 +101,7 @@
 
         <!-- Botón para enviar -->
         <Button x:Name="BtnEnviar" Width="65" Height="64" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderBrush="White" Click="BtnEnvioPostEnventoMercantil_Click" Margin="15,65,0,0">
-            <Image Source="pack://application:,,,/Imagenes/send.png" Stretch="Uniform" Height="64" Width="65"/>
+            <Image Source="pack://application:,,,/Imagenes/send.png" Stretch="Uniform" Height="66" Width="69" RenderTransformOrigin="0.527,0.501"/>
         </Button>
 
         <!-- Modal para Evento -->
@@ -123,5 +128,4 @@
             </Border>
         </Popup>
     </Grid>
-    
 </Window>
