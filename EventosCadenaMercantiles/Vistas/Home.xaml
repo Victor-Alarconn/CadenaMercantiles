@@ -41,6 +41,12 @@
                     <DropShadowEffect Color="Gray" Direction="270" BlurRadius="10" ShadowDepth="5"/>
                 </Setter.Value>
             </Setter>
+            <!-- Trigger para oscurecer el botón cuando el mouse pasa sobre él -->
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#388E3C"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="TextBoxStyle" TargetType="TextBox">
