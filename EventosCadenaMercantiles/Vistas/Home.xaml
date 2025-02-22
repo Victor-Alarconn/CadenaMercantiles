@@ -105,9 +105,21 @@
 
         <!-- Botones de acción -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="190,10,0,0" Height="50" Width="260" Grid.Column="1">
-            <Button Content="Refrescar" Style="{StaticResource ButtonStyle}" Click="BtnRefresh_Click"/>
-            <Button Content="Terminar" Style="{StaticResource ButtonStyle}" Click="BtnExit_Click"/>
+            <Button Style="{StaticResource ButtonStyle}" Click="BtnRefresh_Click">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Image Source="pack://application:,,,/Imagenes/refrescar.png" Height="20" Width="20" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBlock Text="Refrescar" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+
+            <Button Style="{StaticResource ButtonStyle}" Click="BtnExit_Click">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Image Source="pack://application:,,,/Imagenes/apagado.png" Height="20" Width="20" VerticalAlignment="Center" Margin="5,0"/>
+                    <TextBlock Text="Terminar" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Button>
         </StackPanel>
+
 
         <!-- Botón para enviar -->
         <Button x:Name="BtnEnviar" Width="65" Height="64" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderBrush="White" Click="BtnEnvioPostEnventoMercantil_Click" Margin="15,65,0,0">
