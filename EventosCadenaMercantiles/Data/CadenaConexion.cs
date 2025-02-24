@@ -1,12 +1,15 @@
-﻿using System;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+
 
 namespace EventosCadenaMercantiles.Datos
 {
     public class CadenaConexion
     {
+
         private static readonly string archivoConexion = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "env.txt");
 
         // Método para leer la configuración de la conexión desde el archivo
@@ -70,7 +73,6 @@ namespace EventosCadenaMercantiles.Datos
                 Console.WriteLine($"Error al escribir en el archivo de configuración: {ex.Message}");
             }
         }
-
 
     }
 }
