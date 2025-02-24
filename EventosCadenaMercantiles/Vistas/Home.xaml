@@ -82,12 +82,16 @@
         </Grid.RowDefinitions>
 
         <!-- Botón para seleccionar archivo -->
-        <Button x:Name="BtnOpenFile" Width="65" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderBrush="White" Click="BtnOpenFile_Click" Margin="15,10,0,0">
+        <Button Width="65" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" 
+        Background="Transparent" BorderBrush="White" Command="{Binding AbrirArchivoCommand}" 
+        Margin="15,10,0,0">
             <Image Source="pack://application:,,,/Imagenes/upload.png" Stretch="UniformToFill" Height="45" Width="50"/>
         </Button>
 
         <!-- Etiqueta para mostrar el nombre del archivo seleccionado -->
-        <Label x:Name="LbNombreArchivo" Content="Cargue el archivo .xml" HorizontalAlignment="Left" Margin="80,0,0,0" Width="227" FontWeight="Bold" Foreground="Green" VerticalAlignment="Center" Height="26" Grid.ColumnSpan="2"/>
+        <Label Content="{Binding NombreArchivo}" HorizontalAlignment="Left" Margin="80,0,0,0" 
+       Width="227" FontWeight="Bold" Foreground="Green" VerticalAlignment="Center" Height="26" 
+       Grid.ColumnSpan="2"/>
 
         <!-- Otros controles (como ComboBox y botones) -->
         <Grid Grid.Row="1" Margin="20,20,20,20" Grid.ColumnSpan="2">
@@ -97,56 +101,66 @@
             </Grid.ColumnDefinitions>
 
             <!-- Botón para 'Evento' -->
-            <Button x:Name="BtnEvento" Content="Evento" Style="{StaticResource ButtonStyle}" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="160" Height="40" Click="ShowEventoOptions"/>
+            <Button Content="Evento" Style="{StaticResource ButtonStyle}" 
+            HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" 
+            Width="160" Height="40" Command="{Binding TogglePopupEventoCommand}"/>
 
             <!-- Botón para 'CoRechazo' -->
-            <Button x:Name="BtnCoRechazo" Content="CoRechazo" Style="{StaticResource ButtonStyle}" HorizontalAlignment="Left" Margin="226,0,0,0" VerticalAlignment="Top" Width="160" Height="40" Click="ShowCoRechazoOptions"/>
+            <Button Content="CoRechazo" Style="{StaticResource ButtonStyle}" 
+            HorizontalAlignment="Left" Margin="226,0,0,0" VerticalAlignment="Top" 
+            Width="160" Height="40" Command="{Binding TogglePopupCoRechazoCommand}"/>
         </Grid>
 
         <!-- Botones de acción -->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="190,10,0,0" Height="50" Width="260" Grid.Column="1">
-            <Button Style="{StaticResource ButtonStyle}" Click="BtnRefresh_Click">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" 
+            Margin="190,10,0,0" Height="50" Width="260" Grid.Column="1">
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding RefrescarVistaCommand}">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <TextBlock Text="Refrescar" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    <Image Source="pack://application:,,,/Imagenes/refrescar.png" Height="22" Width="22" VerticalAlignment="Center" Margin="5,0"/>
+                    <Image Source="pack://application:,,,/Imagenes/refrescar.png" Height="22" Width="22" 
+                   VerticalAlignment="Center" Margin="5,0"/>
                 </StackPanel>
             </Button>
 
-            <Button Style="{StaticResource ButtonStyle}" Click="BtnExit_Click">
+            <Button Style="{StaticResource ButtonStyle}" Command="{Binding CerrarVentanaCommand}">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <TextBlock Text="Terminar" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    <Image Source="pack://application:,,,/Imagenes/apagado.png" Height="22" Width="22" VerticalAlignment="Center" Margin="5,0"/>
+                    <Image Source="pack://application:,,,/Imagenes/apagado.png" Height="22" Width="22" 
+                   VerticalAlignment="Center" Margin="5,0"/>
                 </StackPanel>
             </Button>
         </StackPanel>
 
-
-
         <!-- Botón para enviar -->
-        <Button x:Name="BtnEnviar" Width="65" Height="64" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderBrush="White" Click="BtnEnvioPostEnventoMercantil_Click" Margin="15,65,0,0">
-            <Image Source="pack://application:,,,/Imagenes/send.png" Stretch="Uniform" Height="66" Width="69" RenderTransformOrigin="0.527,0.501"/>
+        <Button Width="65" Height="64" HorizontalAlignment="Left" VerticalAlignment="Top" 
+        Background="Transparent" BorderBrush="White" Command="{Binding EnviarXmlCommand}" 
+        Margin="15,65,0,0">
+            <Image Source="pack://application:,,,/Imagenes/send.png" Stretch="Uniform" Height="66" 
+           Width="69" RenderTransformOrigin="0.527,0.501"/>
         </Button>
 
         <!-- Modal para Evento -->
-        <Popup x:Name="PopupEvento" IsOpen="False" Width="200" Height="200" HorizontalOffset="0" VerticalOffset="0" Grid.Column="1" Margin="350,0,500,234" Grid.RowSpan="2">
+        <Popup IsOpen="{Binding PopupEventoAbierto}" Width="200" Height="200" 
+       HorizontalOffset="0" VerticalOffset="0" Grid.Column="1" Margin="350,0,500,234" Grid.RowSpan="2">
             <Border Background="White" BorderBrush="Black" BorderThickness="2">
                 <StackPanel>
-                    <Button Content="ACUSE_DOCUMENTO" Click="MenuItem_Evento_Click"/>
-                    <Button Content="RECIBO_SERVICIO" Click="MenuItem_Evento_Click"/>
-                    <Button Content="ACEPTACION_EXPRESA" Click="MenuItem_Evento_Click"/>
-                    <Button Content="RECLAMO" Click="MenuItem_Evento_Click"/>
+                    <Button Content="ACUSE_DOCUMENTO" Command="{Binding SeleccionarEventoCommand}" CommandParameter="ACUSE_DOCUMENTO"/>
+                    <Button Content="RECIBO_SERVICIO" Command="{Binding SeleccionarEventoCommand}" CommandParameter="RECIBO_SERVICIO"/>
+                    <Button Content="ACEPTACION_EXPRESA" Command="{Binding SeleccionarEventoCommand}" CommandParameter="ACEPTACION_EXPRESA"/>
+                    <Button Content="RECLAMO" Command="{Binding SeleccionarEventoCommand}" CommandParameter="RECLAMO"/>
                 </StackPanel>
             </Border>
         </Popup>
 
         <!-- Modal para CoRechazo -->
-        <Popup x:Name="PopupCoRechazo" IsOpen="False" HorizontalAlignment="Left" VerticalAlignment="Center" Width="200" Height="200" Grid.Column="1" Margin="350,0,0,0">
+        <Popup IsOpen="{Binding PopupCoRechazoAbierto}" HorizontalAlignment="Left" VerticalAlignment="Center" 
+       Width="200" Height="200" Grid.Column="1" Margin="350,0,0,0">
             <Border Background="White" BorderBrush="Black" BorderThickness="2">
                 <StackPanel>
-                    <Button Content="DOCUMENTO_CON_INCONSISTENCIAS" Click="MenuItem_CoRechazo_Click"/>
-                    <Button Content="MERCANCIA_NO_ENTREGADA_TOTALMENTE" Click="MenuItem_CoRechazo_Click"/>
-                    <Button Content="MERCANCIA_NO_ENTREGADA_PARCIALMENTE" Click="MenuItem_CoRechazo_Click"/>
-                    <Button Content="SERVICIO_NO_PRESTADO" Click="MenuItem_CoRechazo_Click"/>
+                    <Button Content="DOCUMENTO_CON_INCONSISTENCIAS" Command="{Binding SeleccionarCoRechazoCommand}" CommandParameter="DOCUMENTO_CON_INCONSISTENCIAS"/>
+                    <Button Content="MERCANCIA_NO_ENTREGADA_TOTALMENTE" Command="{Binding SeleccionarCoRechazoCommand}" CommandParameter="MERCANCIA_NO_ENTREGADA_TOTALMENTE"/>
+                    <Button Content="MERCANCIA_NO_ENTREGADA_PARCIALMENTE" Command="{Binding SeleccionarCoRechazoCommand}" CommandParameter="MERCANCIA_NO_ENTREGADA_PARCIALMENTE"/>
+                    <Button Content="SERVICIO_NO_PRESTADO" Command="{Binding SeleccionarCoRechazoCommand}" CommandParameter="SERVICIO_NO_PRESTADO"/>
                 </StackPanel>
             </Border>
         </Popup>

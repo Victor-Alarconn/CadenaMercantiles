@@ -3,6 +3,7 @@ using EventosCadenaMercantiles.Modelos;
 using System;
 using System.Collections.Generic;
 using System.Data.Odbc;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,90 +13,6 @@ namespace EventosCadenaMercantiles.Services
 {
     public class EmpresaService
     {
-        // Obtener empresa por clave
-        public static DatosEmpresaModel ObtenerEmpresaPorClave(string clave)
-        {
-            using (var connection = Conexion.ObtenerConexion())
-            {
-                connection.Open();
-                string query = "SELECT dt_nit, dt_nombre FROM datosempresa WHERE dt_clave = ?";
-
-                using (var command = new OdbcCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("?", clave);
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        return reader.Read()
-                            ? new DatosEmpresaModel
-                            {
-                                DtNit = reader.GetString(0),
-                                DtNombre = reader.GetString(1)
-                            }
-                            : null; // Si no se encuentra la empresa
-                    }
-                }
-            }
-        }
-
-        // Guardar clave en la base de datos
-        //public static void GuardarClave(string nit, string clave, string empresa)
-        //{
-        //    using (var conexionPrincipal = Conexion.ObtenerConexion())
-        //    {
-        //        GuardarClaveEnServidor(conexionPrincipal, nit, clave);
-        //    }
-
-        //    using (var conexionSecundaria = Conexion.ObtenerConexionServidorSecundario(empresa))
-        //    {
-        //        if (conexionSecundaria != null)
-        //        {
-        //            GuardarClaveEnServidor(conexionSecundaria, nit, clave);
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine($"No se pudo conectar al servidor secundario para la empresa: {empresa}");
-        //        }
-        //    }
-        //}
-
-        // Método reutilizable para actualizar o insertar la clave
-        private static void GuardarClaveEnServidor(OdbcConnection connection, string nit, string clave)
-        {
-            try
-            {
-                connection.Open();
-                DatabaseInitializer.CrearTablasSiNoExisten(connection);
-
-                string query = "UPDATE datosempresa SET dt_clave = ? WHERE dt_nit = ?";
-                using (var command = new OdbcCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("?", clave);
-                    command.Parameters.AddWithValue("?", nit);
-
-                    if (command.ExecuteNonQuery() == 0)
-                    {
-                        // Si no se actualizó, significa que la empresa no existe, entonces insertamos
-                        using (var insertarCommand = new OdbcCommand(
-                            "INSERT INTO datosempresa (dt_nit, dt_clave) VALUES (?, ?)", connection))
-                        {
-                            insertarCommand.Parameters.AddWithValue("?", nit);
-                            insertarCommand.Parameters.AddWithValue("?", clave);
-                            insertarCommand.ExecuteNonQuery();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al guardar la clave: {ex.Message}");
-            }
-            finally
-            {
-                connection.Close();
-            }
-        }
-
 
         public enum EstadoEmpresa
         {
@@ -113,7 +30,7 @@ namespace EventosCadenaMercantiles.Services
                 {
                     connection.Open();
 
-                    string query = "SELECT activar, fsuspende FROM empresas.llequipo WHERE empresa = ? AND nro_mac = ? AND modulos LIKE '%M14%'";
+                    string query = "SELECT fsuspende FROM empresas.llequipo WHERE empresa = ? AND nro_mac = ? AND modulos LIKE '%M14%'";
 
                     using (var command = new OdbcCommand(query, connection))
                     {
@@ -124,8 +41,10 @@ namespace EventosCadenaMercantiles.Services
                         {
                             if (reader.Read())
                             {
-                                string activar = reader.GetString(0); // "SI" o "NO"
-                                DateTime fechaSuspension = reader.GetDateTime(1);
+                                string fechaStr = reader.GetString(0); // Fecha en formato "2025-03-24"
+
+                                // Convertir la fecha desde string a DateTime en formato correcto
+                                DateTime fechaSuspension = DateTime.ParseExact(fechaStr, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                                 DateTime hoy = DateTime.Now;
                                 TimeSpan diferencia = fechaSuspension - hoy;
 
@@ -142,7 +61,7 @@ namespace EventosCadenaMercantiles.Services
                                                     "Aviso de suspensión", MessageBoxButton.OK, MessageBoxImage.Warning);
                                 }
 
-                                return activar == "SI" ? EstadoEmpresa.Activa : EstadoEmpresa.NoRegistrada;
+                                return EstadoEmpresa.Activa; // Si la fecha es válida y aún no ha vencido
                             }
                         }
                     }
@@ -155,6 +74,42 @@ namespace EventosCadenaMercantiles.Services
 
             return EstadoEmpresa.NoRegistrada; // Si no se encuentra o hay error, asumir que no está registrada
         }
+
+        public static bool GuardarEquipo(string empresa, string nroMac, DateTime factivar, string modulos, string usuario)
+        {
+            try
+            {
+                using (var connection = Conexion.ObtenerConexion())
+                {
+                    connection.Open();
+
+                    string query = @"INSERT INTO empresas.llequipo 
+                            (empresa, nro_mac, maquina, factivar, fsuspende, modulos, usuario) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+                    using (var command = new OdbcCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("?", empresa);
+                        command.Parameters.AddWithValue("?", nroMac);
+                        command.Parameters.AddWithValue("?", Environment.MachineName); // Nombre del equipo
+                        command.Parameters.AddWithValue("?", factivar.ToString("yyyy-MM-dd")); // Formato de fecha
+                        command.Parameters.AddWithValue("?", factivar.AddMonths(1).ToString("yyyy-MM-dd")); // fsuspende = fecha + 1 mes
+                        command.Parameters.AddWithValue("?", modulos);
+                        command.Parameters.AddWithValue("?", usuario);
+
+                        int filasAfectadas = command.ExecuteNonQuery();
+                        return filasAfectadas > 0;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al guardar el equipo: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+
 
     }
 }

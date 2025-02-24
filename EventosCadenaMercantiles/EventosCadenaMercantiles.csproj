@@ -113,8 +113,11 @@
     <Compile Include="Data\CadenaConexion.cs" />
     <Compile Include="Data\Conexion.cs" />
     <Compile Include="Services\DatabaseInitializer.cs" />
+    <Compile Include="Services\DatosEmpresaService.cs" />
     <Compile Include="Services\EmpresaService.cs" />
     <Compile Include="Services\EquipoIdentificador.cs" />
+    <Compile Include="ViewModels\ActivacionViewModel.cs" />
+    <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\VerificacionViewModel.cs" />
     <Compile Include="Vistas\ActivacionVista.xaml.cs">
       <DependentUpon>ActivacionVista.xaml</DependentUpon>
@@ -178,13 +181,8 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
-
   <ItemGroup />
-
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Imagenes\chart.png" />
     <Resource Include="Imagenes\check.png" />
