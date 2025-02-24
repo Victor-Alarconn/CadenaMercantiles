@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System.Net.NetworkInformation;
+using System;
+using System.Windows;
+using EventosCadenaMercantiles.Services;
 
 namespace EventosCadenaMercantiles.Vistas
 {
@@ -7,7 +10,10 @@ namespace EventosCadenaMercantiles.Vistas
         public ActivacionVista()
         {
             InitializeComponent();
+            Txtmac.Text = EquipoIdentificador.GetUniqueIdentifier();
         }
+
+        
 
         private void BtnActivar_Click(object sender, RoutedEventArgs e)
         {

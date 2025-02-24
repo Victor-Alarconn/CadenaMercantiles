@@ -168,18 +168,28 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <TextBox x:Name="txtnombre" Style="{StaticResource TextBoxStyle}" Grid.Row="0" Margin="10,10,267,10"/>
-                <TextBox x:Name="txtnit" Style="{StaticResource TextBoxStyle}" Grid.Row="1" Margin="10,10,267,10"/>
-                <TextBox x:Name="txtmac" Style="{StaticResource TextBoxStyle}" Grid.Row="2" Margin="10,10,267,10"/>
-                <TextBox x:Name="txtip" Style="{StaticResource TextBoxStyle}" Grid.Row="3" Margin="10,10,267,10"/>
-                <TextBox x:Name="txtcode" Style="{StaticResource TextBoxStyle}" Grid.Row="4" Margin="10,10,267,10"/>
+                <TextBox x:Name="txtnombre" Text="{Binding Nombre, Mode=TwoWay}" 
+         Style="{StaticResource TextBoxStyle}" Grid.Row="0" Margin="10,10,267,10"/>
+
+                <TextBox x:Name="txtnit" Text="{Binding Nit, Mode=TwoWay}" 
+         Style="{StaticResource TextBoxStyle}" Grid.Row="1" Margin="10,10,267,10"/>
+
+                <TextBox x:Name="txtmac" Text="{Binding Mac}" IsEnabled="False"
+         Style="{StaticResource TextBoxStyle}" Grid.Row="2" Margin="10,10,267,10"/>
+
+                <TextBox x:Name="txtip" Text="{Binding Ip, Mode=TwoWay}" 
+         Style="{StaticResource TextBoxStyle}" Grid.Row="3" Margin="10,10,267,10"/>
+
+                <TextBox x:Name="txtcode" Text="{Binding Code, Mode=TwoWay}" 
+         Style="{StaticResource TextBoxStyle}" Grid.Row="4" Margin="10,10,267,10"/>
+
             </Grid>
         </Grid>
 
         <!-- Botones -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Margin="187,281,0,0" Height="50" Width="333">
-            <Button Content="Guardar" Style="{StaticResource ButtonStyle}" Click="Button_Click"/>
-            <Button Content="Actualizar db" Style="{StaticResource ButtonStyle}" Click="Actualizardb_Click"/>
+            <Button Content="Guardar" Style="{StaticResource ButtonStyle}" Command="{Binding GuardarCommand}"/>
+            <Button Content="Actualizar db" Style="{StaticResource ButtonStyle}" Command="{Binding ActualizarCommand}"/>
         </StackPanel>
     </Grid>
 </Window>
