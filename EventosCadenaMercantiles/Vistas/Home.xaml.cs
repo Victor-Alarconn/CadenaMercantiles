@@ -27,6 +27,7 @@ namespace EventosCadenaMercantiles.Vistas
             // Mostrar el cuadro de diálogo y verificar si se ha seleccionado un archivo
             if (openFileDialog.ShowDialog() == true)
             {
+
                 // Obtener la ruta del archivo seleccionado
                 string filePath = openFileDialog.FileName;
 
