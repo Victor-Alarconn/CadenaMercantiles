@@ -15,10 +15,8 @@ namespace EventosCadenaMercantiles.Vistas
         public Home()
         {
             InitializeComponent();
-
             ViewModel = new HomeViewModel();
             DataContext = ViewModel;
-
         }
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
