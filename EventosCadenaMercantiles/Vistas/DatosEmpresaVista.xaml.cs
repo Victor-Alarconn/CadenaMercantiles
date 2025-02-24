@@ -16,5 +16,7 @@ namespace EventosCadenaMercantiles.Vistas
             ViewModel = new VerificacionViewModel();
             DataContext = ViewModel;
         }
+
+       
     }
 }

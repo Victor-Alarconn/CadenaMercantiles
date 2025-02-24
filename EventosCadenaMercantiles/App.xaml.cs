@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows;
 using static EventosCadenaMercantiles.Services.EmpresaService;
@@ -38,8 +39,9 @@ namespace EventosCadenaMercantiles
                 return;
             }
 
+           string Mac = EquipoIdentificador.GetUniqueIdentifier();
             // Verificar el estado de la empresa
-            EstadoEmpresa estado = EmpresaService.VerificarEmpresa(datosConexion[2], datosConexion[3]);
+            EstadoEmpresa estado = EmpresaService.VerificarEmpresa(Mac, datosConexion[3]);
 
             if (estado == EstadoEmpresa.Activa)
             {

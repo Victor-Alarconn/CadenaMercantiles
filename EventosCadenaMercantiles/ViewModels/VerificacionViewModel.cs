@@ -1,4 +1,5 @@
 ﻿using EventosCadenaMercantiles.Services;
+using EventosCadenaMercantiles.Vistas;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,11 +18,18 @@ namespace EventosCadenaMercantiles.ViewModels
         private string _mac;
         private string _ip;
         private string _code;
+        private string _apellidos;
 
         public string Nombre
         {
             get => _nombre;
             set { _nombre = value; OnPropertyChanged(nameof(Nombre)); }
+        }
+
+        public string Apellidos
+        {
+            get => _apellidos;
+            set { _apellidos = value; OnPropertyChanged(nameof(Apellidos)); }
         }
 
         public string Nit
@@ -69,9 +77,48 @@ namespace EventosCadenaMercantiles.ViewModels
                 return;
             }
 
-            MessageBox.Show("Datos guardados correctamente", "Guardar",
-                MessageBoxButton.OK, MessageBoxImage.Information);
+            // Guardar en el archivo env.txt
+            bool guardadoEnv = DatosEmpresaService.GuardarEnv(Ip, Code);
+            DatabaseInitializer.CrearTablasSiNoExisten();
+
+            if (!guardadoEnv)
+            {
+                MessageBox.Show("Hubo un problema al actualizar el archivo env.txt.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return; // No continuar si falla el guardado en env.txt
+            }
+
+            // Guardar en la base de datos
+            bool guardadoExitoso = DatosEmpresaService.GuardarEmpresa(nit: Nit, nombre: Nombre, nombre2: Apellidos);
+
+            if (guardadoExitoso)
+            {
+                MessageBox.Show("Datos guardados correctamente y archivo actualizado.", "Guardar",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // Cerrar la vista actual y abrir la nueva
+                CerrarVentanaYMostrarNueva();
+            }
+            else
+            {
+                MessageBox.Show("Datos guardados en el archivo env.txt, pero hubo un problema al guardar en la base de datos.", "Advertencia",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
+
+
+        private void CerrarVentanaYMostrarNueva()
+        {
+            // Obtener la ventana actual
+            Window ventanaActual = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive);
+
+            // Abrir la nueva vista
+            new ActivacionVista().Show();
+
+            // Cerrar la ventana actual si existe
+            ventanaActual?.Close();
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
