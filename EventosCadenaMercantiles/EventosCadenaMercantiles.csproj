@@ -117,6 +117,7 @@
     <Compile Include="Services\EmpresaService.cs" />
     <Compile Include="Services\EquipoIdentificador.cs" />
     <Compile Include="ViewModels\ActivacionViewModel.cs" />
+    <Compile Include="ViewModels\EventoViewModel.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\VerificacionViewModel.cs" />
     <Compile Include="Vistas\ActivacionVista.xaml.cs">
