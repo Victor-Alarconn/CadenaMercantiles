@@ -168,7 +168,7 @@ namespace EventosCadenaMercantiles.ViewModels
                 ProcesarXml(openFileDialog.FileName);
             }
         }
-
+         
         private void ProcesarXml(string filePath)
         {
             try
