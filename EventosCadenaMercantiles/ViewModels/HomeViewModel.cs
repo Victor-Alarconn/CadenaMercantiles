@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
 using System.IO;
+using EventosCadenaMercantiles.Modelos;
+using System.Collections.ObjectModel;
+using EventosCadenaMercantiles.Services;
+using System.Diagnostics;
 
 namespace EventosCadenaMercantiles.ViewModels
 {
@@ -18,6 +22,16 @@ namespace EventosCadenaMercantiles.ViewModels
         private bool _popupCoRechazoAbierto;
         private string _textoEvento;
         private string _textoCoRechazo;
+        private ObservableCollection<EventosModel> _eventos;
+        public ObservableCollection<EventosModel> Eventos
+        {
+            get => _eventos;
+            set
+            {
+                _eventos = value;
+                OnPropertyChanged(nameof(Eventos));
+            }
+        }
 
         public string NombreArchivo
         {
@@ -58,6 +72,8 @@ namespace EventosCadenaMercantiles.ViewModels
         public ICommand SeleccionarEventoCommand { get; }
         public ICommand SeleccionarCoRechazoCommand { get; }
         public ICommand CerrarPopupsCommand { get; }
+        public ICommand CargarEventosCommand { get; }
+        public ICommand  Even_documCommand { get; }
 
         public class RelayCommand<T> : ICommand
         {
@@ -94,6 +110,47 @@ namespace EventosCadenaMercantiles.ViewModels
             SeleccionarEventoCommand = new RelayCommand<string>(param => SeleccionarEvento(param));
             SeleccionarCoRechazoCommand = new RelayCommand<string>(param => SeleccionarCoRechazo(param));
             CerrarPopupsCommand = new RelayCommand(param => CerrarPopups());
+            Even_documCommand = new RelayCommand<EventosModel>(AbrirQR);
+
+            Eventos = new ObservableCollection<EventosModel>();
+            CargarEventosCommand = new RelayCommand<object>(param => LoadEventos());
+
+            // Llamar directamente a LoadEventos aquí
+            LoadEventos();
+
+        }
+
+
+        private void LoadEventos()
+        {
+            DateTime fechaInicio = DateTime.Now.AddDays(-7); // Ajusta las fechas según necesidad
+            DateTime fechaFin = DateTime.Now;
+
+            var eventosLista = EventosService.ObtenerEventos(fechaInicio, fechaFin);
+
+            Eventos.Clear();
+            foreach (var evento in eventosLista)
+            {
+                Eventos.Add(evento);
+            }
+        }
+
+        private void AbrirQR(EventosModel evento)
+        {
+            if (evento == null || string.IsNullOrWhiteSpace(evento.EvenQrcode))
+                return;
+
+            try
+            {
+                Process myProcess = new Process();
+                myProcess.StartInfo.UseShellExecute = true;
+                myProcess.StartInfo.FileName = evento.EvenQrcode;
+                myProcess.Start();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al abrir QR: {ex.Message}");
+            }
         }
 
 

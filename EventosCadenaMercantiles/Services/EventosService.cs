@@ -1,17 +1,17 @@
-﻿using System;
+﻿using EventosCadenaMercantiles.Data;
+using EventosCadenaMercantiles.Modelos;
+using System;
 using System.Collections.Generic;
 using System.Data.Odbc;
-using System.Windows.Input;
-using System.Windows;
-using EventosCadenaMercantiles.Data;
-using EventosCadenaMercantiles.Modelos; // Asegúrate de importar el modelo correcto
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace EventosCadenaMercantiles.ViewModels
+namespace EventosCadenaMercantiles.Services
 {
-    public class EventoViewModel
+    public class EventosService
     {
-        // Método para obtener los eventos desde la base de datos
-        public static List<EventosModel> GetEventos(DateTime desde, DateTime hasta)
+        public static List<EventosModel> ObtenerEventos(DateTime desde, DateTime hasta) // Método para obtener los eventos de la base de datos
         {
             var connection = Conexion.ObtenerConexion();
             List<EventosModel> eventos = new List<EventosModel>();
@@ -69,31 +69,5 @@ namespace EventosCadenaMercantiles.ViewModels
             command.ExecuteNonQuery();
             connection.Close();
         }
-
-
-
-        public class RelayCommand<T> : ICommand
-        {
-            private readonly Action<T> _execute;
-            private readonly Predicate<T> _canExecute;
-
-            public RelayCommand(Action<T> execute, Predicate<T> canExecute = null)
-            {
-                _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-                _canExecute = canExecute;
-            }
-
-            public bool CanExecute(object parameter) => _canExecute == null || _canExecute((T)parameter);
-
-            public void Execute(object parameter) => _execute((T)parameter);
-
-            public event EventHandler CanExecuteChanged
-            {
-                add => CommandManager.RequerySuggested += value;
-                remove => CommandManager.RequerySuggested -= value;
-            }
-        }
-
-
     }
 }

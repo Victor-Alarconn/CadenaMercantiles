@@ -116,8 +116,8 @@
     <Compile Include="Services\DatosEmpresaService.cs" />
     <Compile Include="Services\EmpresaService.cs" />
     <Compile Include="Services\EquipoIdentificador.cs" />
+    <Compile Include="Services\EventosService.cs" />
     <Compile Include="ViewModels\ActivacionViewModel.cs" />
-    <Compile Include="ViewModels\EventoViewModel.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\VerificacionViewModel.cs" />
     <Compile Include="Vistas\ActivacionVista.xaml.cs">
@@ -182,7 +182,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Recursos\search.png" />
+  </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <Resource Include="Imagenes\chart.png" />
