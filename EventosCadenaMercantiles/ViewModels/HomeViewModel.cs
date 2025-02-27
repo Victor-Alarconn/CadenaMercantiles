@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
 using System.IO;
+using System.Windows.Controls;
 
 namespace EventosCadenaMercantiles.ViewModels
 {
@@ -111,7 +112,7 @@ namespace EventosCadenaMercantiles.ViewModels
                 ProcesarXml(openFileDialog.FileName);
             }
         }
-         
+
         private void ProcesarXml(string filePath)
         {
             try
@@ -173,6 +174,25 @@ namespace EventosCadenaMercantiles.ViewModels
             OnPropertyChanged(propertyName);
             return true;
         }
+
+        // Método para manejar el clic en el botón de búsqueda
+        private void BtnBuscar_Click(object sender, RoutedEventArgs e)
+        {
+            // Aquí se puede agregar la lógica de búsqueda si es necesario en el futuro
+        }
+
+        // Método para manejar el cambio de selección del ComboBox "Filtro de evento"
+        private void Filtroevento_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Aquí se puede agregar la lógica para filtrar por evento si es necesario en el futuro
+        }
+
+        // Método para manejar el cambio de selección del ComboBox "Filtro de código"
+        private void Filtrocodigo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Aquí se puede agregar la lógica para filtrar por código si es necesario en el futuro
+        }
+
 
     }
 }

@@ -94,23 +94,106 @@
        Width="227" FontWeight="Bold" Foreground="Green" VerticalAlignment="Center" Height="26" 
        Grid.ColumnSpan="2"/>
 
-        <!-- Otros controles (como ComboBox y botones) -->
-        <Grid Grid.Row="1" Margin="20,20,20,20" Grid.ColumnSpan="2">
+        <!-- Contenido adicional (como el que mencionas para "Evento" y "CoRechazo") -->
+        <Grid Grid.Row="1" Margin="20,20,-49,133" Grid.ColumnSpan="2" Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="13*"/>
+                <RowDefinition Height="51*"/>
+                <RowDefinition Height="145*"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!-- Botón para 'Evento' -->
-            <Button Content="Evento" Style="{StaticResource ButtonStyle}" 
-            HorizontalAlignment="Left" Margin="115,-191,0,0" VerticalAlignment="Top" 
-            Width="160" Height="40" Command="{Binding TogglePopupEventoCommand}" Grid.Column="1"/>
 
-            <!-- Botón para 'CoRechazo' -->
-            <Button Content="CoRechazo" Style="{StaticResource ButtonStyle}" 
-            HorizontalAlignment="Left" Margin="305,-191,0,0" VerticalAlignment="Top" 
-            Width="160" Height="40" Command="{Binding TogglePopupCoRechazoCommand}" Grid.Column="1"/>
+
         </Grid>
+
+        <!-- Otros controles (como ComboBox y botones) -->
+        <Grid Grid.Row="1" Margin="20,10,20,20" Grid.ColumnSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="1.5*" />
+                <ColumnDefinition Width="1.5*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Contenido de la búsqueda -->
+            <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="19,4,237,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Label Buscar -->
+                <Label Content="Buscar" Foreground="White" HorizontalAlignment="Left" FontWeight="Bold" VerticalAlignment="Center" Height="26" Margin="10,0,0,0" Grid.Column="0" />
+
+                <!-- TextBox Buscar -->
+                <TextBox x:Name="TxtBusqueda" ToolTip="Para buscar presione ENTER" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="10,0,0,0" TextWrapping="Wrap" Height="24" Grid.Column="1"/>
+
+                <!-- Botón de búsqueda -->
+                <Button Height="25" Click="BtnBuscar_Click" Background="Transparent" BorderBrush="White" Width="60" x:Name="BtnBuscar" Margin="5,0,0,0" Grid.Column="2">
+                    <Image Source="C:/Users/usuario/source/repos/CadenaMercantiles/EventosCadenaMercantiles/Imagenes/search.png" HorizontalAlignment="Center"/>
+                </Button>
+            </Grid>
+
+            <!-- Filtros de Fecha -->
+            <Grid Grid.ColumnSpan="2" Margin="239,4,-244,-5" Grid.Column="1" Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="67*" />
+                    <ColumnDefinition Width="190*" />
+                    <ColumnDefinition Width="618*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Label "Del" -->
+                <Label Content="Del" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" RenderTransformOrigin="2.261,0.27" Height="25" Width="28"/>
+
+                <!-- DatePicker "Desde" -->
+                <DatePicker x:Name="datede" Width="150" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Grid.Column="1" Margin="14,0,0,0"/>
+
+                <!-- Label "Hasta" -->
+                <Label Content="Hasta" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="2" Margin="10,0,0,0" Height="25" Width="42"/>
+
+                <!-- DatePicker "Hasta" -->
+                <DatePicker x:Name="datehasta" Width="152" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="80,0,0,0" Height="27" Grid.Column="2"/>
+            </Grid>
+
+            <!-- Filtros de ComboBox -->
+            <Grid Grid.ColumnSpan="3" Margin="150,-47,-32,64">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="367*" />
+                    <ColumnDefinition Width="154*"/>
+                    <ColumnDefinition Width="236*" />
+                    <ColumnDefinition Width="285*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Filtro Evento -->
+                <ComboBox x:Name="filtroevento" SelectionChanged="Filtroevento_SelectionChanged" Grid.Row="0" Height="25" Margin="170,0,34,0">
+                    <ComboBoxItem IsSelected="True">Filtrar Eventos</ComboBoxItem>
+                    <ComboBoxItem>ACUSE_DOCUMENTO</ComboBoxItem>
+                    <ComboBoxItem>RECIBO_SERVICIO</ComboBoxItem>
+                    <ComboBoxItem>ACEPTACION_EXPRESA</ComboBoxItem>
+                    <ComboBoxItem>RECLAMO</ComboBoxItem>
+                </ComboBox>
+
+                <!-- Filtro Codigo -->
+                <ComboBox x:Name="filtrocodigo" SelectionChanged="Filtrocodigo_SelectionChanged" Grid.Row="0" Height="25" Margin="23,0,0,0" Grid.Column="1">
+                    <ComboBoxItem IsSelected="True">Filtrar Codigo</ComboBoxItem>
+                    <ComboBoxItem>EXITOSO</ComboBoxItem>
+                    <ComboBoxItem>ERROR</ComboBoxItem>
+                    <ComboBoxItem>ERRORDIAN</ComboBoxItem>
+                </ComboBox>
+            </Grid>
+        </Grid>
+
+
 
         <!-- Botones de acción -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" 
@@ -140,34 +223,31 @@
            Width="69" RenderTransformOrigin="0.527,0.501"/>
         </Button>
 
-        <!-- Modal para Evento -->
-        <Popup IsOpen="{Binding PopupEventoAbierto}" Width="200" Height="200" 
-       HorizontalOffset="0" VerticalOffset="0" Grid.Column="1" Margin="350,0,500,234" Grid.RowSpan="2">
-            <Border Background="White" BorderBrush="Black" BorderThickness="2">
-                <StackPanel>
-                    <Button Content="ACUSE_DOCUMENTO" Command="{Binding SeleccionarEventoCommand}" CommandParameter="ACUSE_DOCUMENTO"/>
-                    <Button Content="RECIBO_SERVICIO" Command="{Binding SeleccionarEventoCommand}" CommandParameter="RECIBO_SERVICIO"/>
-                    <Button Content="ACEPTACION_EXPRESA" Command="{Binding SeleccionarEventoCommand}" CommandParameter="ACEPTACION_EXPRESA"/>
-                    <Button Content="RECLAMO" Command="{Binding SeleccionarEventoCommand}" CommandParameter="RECLAMO"/>
-                </StackPanel>
-            </Border>
-        </Popup>
+        <Grid Grid.Column="1" VerticalAlignment="Top" Margin="738,15,20,0"  >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <Label Content="Evento"  Foreground="White"  FontWeight="Bold" Grid.Row="0"  VerticalAlignment="Center" Height="26"/>
+            <ComboBox x:Name="Cbevento" SelectionChanged="Cbevento_SelectionChanged" Grid.Row="0" Width="160" Height="25" Margin="70,9,20,6" >
+                <ComboBoxItem IsSelected="True">ACUSE_DOCUMENTO</ComboBoxItem>
+                <ComboBoxItem>RECIBO_SERVICIO</ComboBoxItem>
+                <ComboBoxItem>ACEPTACION_EXPRESA</ComboBoxItem>
+                <ComboBoxItem>RECLAMO</ComboBoxItem>
+            </ComboBox>
+            <Label Content="CoRechazo"  Foreground="White"  FontWeight="Bold" Grid.Row="1" VerticalAlignment="Center" Height="26"/>
+            <ComboBox x:Name="Cbcodigorechazo" Grid.Row="1"  Width="160" Height="25" Margin="70,9,20,6" >
+                <ComboBoxItem IsSelected="True">DOCUMENTO_CON_INCONSISTENCIAS</ComboBoxItem>
+                <ComboBoxItem>MERCANCIA_NO_ENTREGADA_TOTALMENTE</ComboBoxItem>
+                <ComboBoxItem>MERCANCIA_NO_ENTREGADA_PARCIALMENTE</ComboBoxItem>
+                <ComboBoxItem>SERVICIO_NO_PRESTADO</ComboBoxItem>
+            </ComboBox>
+        </Grid>
 
-        <!-- Modal para CoRechazo -->
-        <Popup IsOpen="{Binding PopupCoRechazoAbierto}" HorizontalAlignment="Left" VerticalAlignment="Center" 
-       Width="200" Height="200" Grid.Column="1" Margin="350,0,0,0">
-            <Border Background="White" BorderBrush="Black" BorderThickness="2">
-                <StackPanel>
-                    <Button Content="DOCUMENTO_CON_INCONSISTENCIAS" Command="{Binding SeleccionarCoRechazoCommand}" CommandParameter="DOCUMENTO_CON_INCONSISTENCIAS"/>
-                    <Button Content="MERCANCIA_NO_ENTREGADA_TOTALMENTE" Command="{Binding SeleccionarCoRechazoCommand}" CommandParameter="MERCANCIA_NO_ENTREGADA_TOTALMENTE"/>
-                    <Button Content="MERCANCIA_NO_ENTREGADA_PARCIALMENTE" Command="{Binding SeleccionarCoRechazoCommand}" CommandParameter="MERCANCIA_NO_ENTREGADA_PARCIALMENTE"/>
-                    <Button Content="SERVICIO_NO_PRESTADO" Command="{Binding SeleccionarCoRechazoCommand}" CommandParameter="SERVICIO_NO_PRESTADO"/>
-                </StackPanel>
-            </Border>
-        </Popup>
         <!-- DataGrid para mostrar los eventos -->
         <DataGrid x:Name="EventosDataGrid" AutoGenerateColumns="False" ItemsSource="{Binding Eventos}" 
-          Margin="20,100,20,20" Grid.Row="1" Grid.ColumnSpan="2">
+          Margin="20,100,20,20" Grid.Row="1" Grid.ColumnSpan="2" SelectionChanged="EventosDataGrid_SelectionChanged_1">
             <DataGrid.Background>
                 <SolidColorBrush Color="Transparent"/>
             </DataGrid.Background>
