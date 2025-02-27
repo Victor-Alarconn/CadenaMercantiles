@@ -263,9 +263,10 @@
                 <DataGridTemplateColumn Header="#QRcode" Width="80">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Height="25" Width="80" ToolTip="Click para visualizar el documento en la Dian" 
-                            HorizontalAlignment="Center" Background="Transparent" BorderBrush="Transparent" 
-                            Command="{Binding MostrarQRCodeCommand}" CommandParameter="{Binding Even_docum}">
+                            <Button Height="25" Width="80" ToolTip="Click para visualizar el documento en la Dian"
+                    HorizontalAlignment="Center" Background="Transparent" BorderBrush="Transparent"
+                    Command="{Binding DataContext.Even_documCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                    CommandParameter="{Binding}">
                                 <Image Source="/Recursos/search.png"/>
                             </Button>
                         </DataTemplate>
