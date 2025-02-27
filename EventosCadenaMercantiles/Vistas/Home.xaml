@@ -150,7 +150,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Contenido de la búsqueda -->
-            <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="19,4,237,5">
+            <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="23,45,233,-36">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
