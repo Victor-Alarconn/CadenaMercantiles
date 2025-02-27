@@ -64,12 +64,15 @@
             </Setter>
         </Style>
 
+        <!-- Estilo actualizado para Label -->
         <Style x:Key="LabelStyle" TargetType="Label">
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Foreground" Value="#4CAF50"/>
+            <!-- Aquí está el color verde -->
         </Style>
     </Window.Resources>
+
 
     <Grid x:Name="contenedor">
         <Grid.ColumnDefinitions>
@@ -80,6 +83,28 @@
             <RowDefinition Height="Auto" MinHeight="185"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+
+        <Grid Grid.Column="1" VerticalAlignment="Top" Margin="738,15,20,0"  >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <Label Content="Evento" Foreground="White" FontWeight="Bold" Grid.Row="0" VerticalAlignment="Center" Height="26" Style="{StaticResource LabelStyle}"/>
+            <ComboBox x:Name="Cbevento" SelectionChanged="Cbevento_SelectionChanged" Grid.Row="0" Width="160" Height="25" Margin="70,9,20,6" >
+                <ComboBoxItem IsSelected="True">ACUSE_DOCUMENTO</ComboBoxItem>
+                <ComboBoxItem>RECIBO_SERVICIO</ComboBoxItem>
+                <ComboBoxItem>ACEPTACION_EXPRESA</ComboBoxItem>
+                <ComboBoxItem>RECLAMO</ComboBoxItem>
+            </ComboBox>
+            <Label Content="CoRechazo" Foreground="White" FontWeight="Bold" Grid.Row="1" VerticalAlignment="Center" Height="26" Style="{StaticResource LabelStyle}"/>
+            <ComboBox x:Name="Cbcodigorechazo" Grid.Row="1"  Width="160" Height="25" Margin="70,9,20,6" >
+                <ComboBoxItem IsSelected="True">DOCUMENTO_CON_INCONSISTENCIAS</ComboBoxItem>
+                <ComboBoxItem>MERCANCIA_NO_ENTREGADA_TOTALMENTE</ComboBoxItem>
+                <ComboBoxItem>MERCANCIA_NO_ENTREGADA_PARCIALMENTE</ComboBoxItem>
+                <ComboBoxItem>SERVICIO_NO_PRESTADO</ComboBoxItem>
+            </ComboBox>
+        </Grid>
 
         <!-- Botón para seleccionar archivo -->
         <Button Width="65" Height="50" HorizontalAlignment="Left" VerticalAlignment="Top" 
@@ -168,14 +193,15 @@
             <!-- Filtros de ComboBox -->
             <Grid Grid.ColumnSpan="3" Margin="150,-47,-32,64">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="367*" />
+                    <ColumnDefinition Width="141*" />
+                    <ColumnDefinition Width="226*"/>
                     <ColumnDefinition Width="154*"/>
                     <ColumnDefinition Width="236*" />
                     <ColumnDefinition Width="285*"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- Filtro Evento -->
-                <ComboBox x:Name="filtroevento" SelectionChanged="Filtroevento_SelectionChanged" Grid.Row="0" Height="25" Margin="170,0,34,0">
+                <ComboBox x:Name="filtroevento" SelectionChanged="Filtroevento_SelectionChanged" Grid.Row="0" Height="25" Margin="29,0,89,0" Grid.Column="1">
                     <ComboBoxItem IsSelected="True">Filtrar Eventos</ComboBoxItem>
                     <ComboBoxItem>ACUSE_DOCUMENTO</ComboBoxItem>
                     <ComboBoxItem>RECIBO_SERVICIO</ComboBoxItem>
@@ -184,7 +210,7 @@
                 </ComboBox>
 
                 <!-- Filtro Codigo -->
-                <ComboBox x:Name="filtrocodigo" SelectionChanged="Filtrocodigo_SelectionChanged" Grid.Row="0" Height="25" Margin="23,0,0,0" Grid.Column="1">
+                <ComboBox x:Name="filtrocodigo" SelectionChanged="Filtrocodigo_SelectionChanged" Grid.Row="0" Height="25" Margin="23,0,0,0" Grid.Column="2">
                     <ComboBoxItem IsSelected="True">Filtrar Codigo</ComboBoxItem>
                     <ComboBoxItem>EXITOSO</ComboBoxItem>
                     <ComboBoxItem>ERROR</ComboBoxItem>
@@ -223,27 +249,7 @@
            Width="69" RenderTransformOrigin="0.527,0.501"/>
         </Button>
 
-        <Grid Grid.Column="1" VerticalAlignment="Top" Margin="738,15,20,0"  >
-            <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="40"/>
-            </Grid.RowDefinitions>
-            <Label Content="Evento"  Foreground="White"  FontWeight="Bold" Grid.Row="0"  VerticalAlignment="Center" Height="26"/>
-            <ComboBox x:Name="Cbevento" SelectionChanged="Cbevento_SelectionChanged" Grid.Row="0" Width="160" Height="25" Margin="70,9,20,6" >
-                <ComboBoxItem IsSelected="True">ACUSE_DOCUMENTO</ComboBoxItem>
-                <ComboBoxItem>RECIBO_SERVICIO</ComboBoxItem>
-                <ComboBoxItem>ACEPTACION_EXPRESA</ComboBoxItem>
-                <ComboBoxItem>RECLAMO</ComboBoxItem>
-            </ComboBox>
-            <Label Content="CoRechazo"  Foreground="White"  FontWeight="Bold" Grid.Row="1" VerticalAlignment="Center" Height="26"/>
-            <ComboBox x:Name="Cbcodigorechazo" Grid.Row="1"  Width="160" Height="25" Margin="70,9,20,6" >
-                <ComboBoxItem IsSelected="True">DOCUMENTO_CON_INCONSISTENCIAS</ComboBoxItem>
-                <ComboBoxItem>MERCANCIA_NO_ENTREGADA_TOTALMENTE</ComboBoxItem>
-                <ComboBoxItem>MERCANCIA_NO_ENTREGADA_PARCIALMENTE</ComboBoxItem>
-                <ComboBoxItem>SERVICIO_NO_PRESTADO</ComboBoxItem>
-            </ComboBox>
-        </Grid>
+
 
         <!-- DataGrid para mostrar los eventos -->
         <DataGrid x:Name="EventosDataGrid" AutoGenerateColumns="False" ItemsSource="{Binding Eventos}" 
