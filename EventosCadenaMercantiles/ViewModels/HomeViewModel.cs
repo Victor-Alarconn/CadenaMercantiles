@@ -17,6 +17,8 @@ using System.Diagnostics;
 using System.IO.Compression;
 using System.Xml;
 using System.Web.UI.WebControls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace EventosCadenaMercantiles.ViewModels
 {
@@ -27,6 +29,8 @@ namespace EventosCadenaMercantiles.ViewModels
         private bool _popupCoRechazoAbierto;
         private string _textoEvento;
         private string _textoCoRechazo;
+        private ImageSource _logoEmpresa;
+
         private ObservableCollection<EventosModel> _eventos;
         public ObservableCollection<EventosModel> Eventos
         {
@@ -36,6 +40,12 @@ namespace EventosCadenaMercantiles.ViewModels
                 _eventos = value;
                 OnPropertyChanged(nameof(Eventos));
             }
+        }
+
+        public ImageSource LogoEmpresa
+        {
+            get => _logoEmpresa;
+            set => SetProperty(ref _logoEmpresa, value);
         }
 
         public string NombreArchivo
@@ -78,7 +88,7 @@ namespace EventosCadenaMercantiles.ViewModels
         public ICommand SeleccionarCoRechazoCommand { get; }
         public ICommand CerrarPopupsCommand { get; }
         public ICommand CargarEventosCommand { get; }
-        public ICommand  Even_documCommand { get; }
+        public ICommand Even_documCommand { get; }
 
         public class RelayCommand<T> : ICommand
         {
@@ -120,6 +130,7 @@ namespace EventosCadenaMercantiles.ViewModels
             Eventos = new ObservableCollection<EventosModel>();
             CargarEventosCommand = new RelayCommand<object>(param => LoadEventos());
 
+            LoadCompanyLogo(); // Carga el logo al inicializar el ViewModel
             // Llamar directamente a LoadEventos aquí
             LoadEventos();
 
@@ -167,8 +178,8 @@ namespace EventosCadenaMercantiles.ViewModels
                 Filter = "Archivos ZIP (*.zip)|*.zip"
             };
 
-            if(openFileDialog.ShowDialog() == true)
-    {
+            if (openFileDialog.ShowDialog() == true)
+            {
                 NombreArchivo = Path.GetFileName(openFileDialog.FileName);
                 ExtraerYProcesarZip(openFileDialog.FileName);
             }
@@ -404,6 +415,26 @@ namespace EventosCadenaMercantiles.ViewModels
         private void Filtrocodigo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Aquí se puede agregar la lógica para filtrar por código si es necesario en el futuro
+        }
+
+
+        private void LoadCompanyLogo()
+        {
+            // Construir la ruta relativa a la carpeta de imágenes dentro del proyecto
+            string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            string relativePath = @"..\..\Imagenes\LogoEmp.png"; // Ajusta la ruta relativa según la estructura de carpetas
+            string logoPath = Path.Combine(basePath, relativePath);
+
+            if (File.Exists(logoPath))
+            {
+                LogoEmpresa = new BitmapImage(new Uri(logoPath, UriKind.Absolute));
+            }
+            else
+            {
+                Console.WriteLine("No se encontró el logo en: " + logoPath); // Mensaje de error en la consola
+                                                                             // Cargar una imagen por defecto si no existe el logo
+                LogoEmpresa = new BitmapImage(new Uri("pack://application:,,,/Imagenes/DefaultLogo.png"));
+            }
         }
 
 

@@ -15,6 +15,7 @@ namespace EventosCadenaMercantiles.Vistas
             InitializeComponent();
             ViewModel = new HomeViewModel();  // Inicializar el ViewModel de Home
             DataContext = ViewModel;  // Asignar el DataContext al ViewModel de Home
+
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)

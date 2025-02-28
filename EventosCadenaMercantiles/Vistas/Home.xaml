@@ -8,6 +8,10 @@
         d:DesignHeight="450" d:DesignWidth="1200"
         Title="Home"
         MouseDown="Window_MouseDown">
+    <Window.DataContext>
+        <local:HomeViewModel />
+    </Window.DataContext>
+
 
     <Window.Background>
         <ImageBrush ImageSource="pack://application:,,,/Imagenes/Fondo.png" Stretch="UniformToFill"/>
@@ -83,6 +87,13 @@
             <RowDefinition Height="Auto" MinHeight="185"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+
+        <!-- Logo de la empresa -->
+        <Image Grid.Column="1" Grid.Row="0"
+               Width="100" Height="100" 
+               Margin="525,10,0,0" 
+               HorizontalAlignment="Left" VerticalAlignment="Top"
+               Source="{Binding LogoEmpresa}" />
 
         <Grid Grid.Column="1" VerticalAlignment="Top" Margin="738,15,20,0"  >
             <Grid.RowDefinitions>
