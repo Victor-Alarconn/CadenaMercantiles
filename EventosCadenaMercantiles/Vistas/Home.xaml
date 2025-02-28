@@ -4,10 +4,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:EventosCadenaMercantiles.ViewModels"
-        mc:Ignorable="d" 
-        d:DesignHeight="450" d:DesignWidth="1200"
-        Title="Home"
+        mc:Ignorable="d"
+        Title="Inicio"
+        WindowState="Maximized"
+        ResizeMode="CanResize"
+        WindowStyle="SingleBorderWindow"
         MouseDown="Window_MouseDown">
+
 
     <Window.Background>
         <ImageBrush ImageSource="pack://application:,,,/Imagenes/Fondo.png" Stretch="UniformToFill"/>
@@ -91,7 +94,7 @@
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             <Label Content="Evento" Foreground="White" FontWeight="Bold" Grid.Row="0" VerticalAlignment="Center" Height="26" Style="{StaticResource LabelStyle}"/>
-            <ComboBox x:Name="Cbevento" SelectionChanged="Cbevento_SelectionChanged" Grid.Row="0" Width="160" Height="25" Margin="70,9,20,6" >
+            <ComboBox x:Name="Cbevento"  Grid.Row="0" Width="160" Height="25" Margin="70,9,20,6" >
                 <ComboBoxItem IsSelected="True">ACUSE_DOCUMENTO</ComboBoxItem>
                 <ComboBoxItem>RECIBO_SERVICIO</ComboBoxItem>
                 <ComboBoxItem>ACEPTACION_EXPRESA</ComboBoxItem>
@@ -164,7 +167,7 @@
                 <TextBox x:Name="TxtBusqueda" ToolTip="Para buscar presione ENTER" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="10,0,0,0" TextWrapping="Wrap" Height="24" Grid.Column="1"/>
 
                 <!-- Botón de búsqueda -->
-                <Button Height="25" Click="BtnBuscar_Click" Background="Transparent" BorderBrush="White" Width="60" x:Name="BtnBuscar" Margin="5,0,0,0" Grid.Column="2">
+                <Button Height="25" Background="Transparent" BorderBrush="White" Width="60" x:Name="BtnBuscar" Margin="5,0,0,0" Grid.Column="2">
                     <Image Source="C:/Users/usuario/source/repos/CadenaMercantiles/EventosCadenaMercantiles/Imagenes/search.png" HorizontalAlignment="Center"/>
                 </Button>
             </Grid>
@@ -198,11 +201,11 @@
                     <ColumnDefinition Width="81*"/>
                     <ColumnDefinition Width="166*"/>
                     <ColumnDefinition Width="224*" />
-                    <ColumnDefinition Width="285*"/>
+                   
                 </Grid.ColumnDefinitions>
 
                 <!-- Filtro Evento -->
-                <ComboBox x:Name="filtroevento" SelectionChanged="Filtroevento_SelectionChanged" Grid.Row="0" Margin="13,0,13,0" Grid.Column="1">
+                <ComboBox x:Name="filtroevento"  Grid.Row="0" Margin="13,0,13,0" Grid.Column="1">
                     <ComboBoxItem IsSelected="True">Filtrar Eventos</ComboBoxItem>
                     <ComboBoxItem>ACUSE_DOCUMENTO</ComboBoxItem>
                     <ComboBoxItem>RECIBO_SERVICIO</ComboBoxItem>
@@ -211,7 +214,7 @@
                 </ComboBox>
 
                 <!-- Filtro Codigo -->
-                <ComboBox x:Name="filtrocodigo" SelectionChanged="Filtrocodigo_SelectionChanged" Grid.Row="0" Margin="53,0,0,0" Grid.Column="3">
+                <ComboBox x:Name="filtrocodigo"  Grid.Row="0" Margin="53,0,0,0" Grid.Column="3">
                     <ComboBoxItem IsSelected="True">Filtrar Codigo</ComboBoxItem>
                     <ComboBoxItem>EXITOSO</ComboBoxItem>
                     <ComboBoxItem>ERROR</ComboBoxItem>
@@ -254,7 +257,7 @@
 
         <!-- DataGrid para mostrar los eventos -->
         <DataGrid x:Name="EventosDataGrid" AutoGenerateColumns="False" ItemsSource="{Binding Eventos}" 
-          Margin="20,100,20,20" Grid.Row="1" Grid.ColumnSpan="2" SelectionChanged="EventosDataGrid_SelectionChanged_1">
+          Margin="20,100,20,20" Grid.Row="1" Grid.ColumnSpan="2" CanUserAddRows="False" >
             <DataGrid.Background>
                 <SolidColorBrush Color="Transparent"/>
             </DataGrid.Background>

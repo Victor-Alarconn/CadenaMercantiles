@@ -128,7 +128,7 @@ namespace EventosCadenaMercantiles.ViewModels
 
         private void LoadEventos()
         {
-            DateTime fechaInicio = DateTime.Now.AddDays(-7); // Ajusta las fechas según necesidad
+            DateTime fechaInicio = DateTime.Now.AddDays(-7);
             DateTime fechaFin = DateTime.Now;
 
             var eventosLista = EventosService.ObtenerEventos(fechaInicio, fechaFin);
@@ -136,9 +136,14 @@ namespace EventosCadenaMercantiles.ViewModels
             Eventos.Clear();
             foreach (var evento in eventosLista)
             {
+                if (string.IsNullOrWhiteSpace(evento.EvenDocum) || string.IsNullOrWhiteSpace(evento.EvenEvento))
+                {
+                    continue; // Ignorar registros vacíos
+                }
                 Eventos.Add(evento);
             }
         }
+
 
         private void AbrirQR(EventosModel evento)
         {
@@ -175,7 +180,6 @@ namespace EventosCadenaMercantiles.ViewModels
         }
 
         private void ExtraerYProcesarZip(string rutaZip)
-
         {
             using (ZipArchive archive = ZipFile.OpenRead(rutaZip))
             {
@@ -185,9 +189,33 @@ namespace EventosCadenaMercantiles.ViewModels
                     {
                         using (Stream xmlStream = entry.Open())
                         {
-                            ProcesarXmlDesdeStream(xmlStream);
+                            var documento = ProcesarXmlDesdeStream(xmlStream);
+                            if (documento == null)
+                            {
+                                return;
+                            }
+
+                            if (EventosService.ExisteFactura(documento.PrefijoFactura))
+                            {
+                                MessageBox.Show($"La factura {documento.PrefijoFactura} ya se encuentra en la base.",
+                                                "Factura Duplicada", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                return;
+                            }
+
+                            // Enviar correo antes de guardar en BD
+                            if (!EnvioCorreoService.EnviarCorreo(documento, rutaZip))
+                            {
+                                MessageBox.Show("No se pudo enviar el correo, la factura no será guardada.",
+                                                "Error de Envío", MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;  // No guardamos si el correo falla
+                            }
+
+                            // Si el correo fue exitoso, guardamos en la base de datos
+                            EventosService.GuardarEvento(documento);
+                            MessageBox.Show("Documento procesado y guardado exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                            LoadEventos();
                         }
-                        return; // Solo procesa el primer XML encontrado
+                        return;
                     }
                 }
             }
@@ -195,15 +223,27 @@ namespace EventosCadenaMercantiles.ViewModels
             MessageBox.Show("No se encontró un archivo XML en el ZIP.");
         }
 
+
+
+
         private DocumentoAdjunto ProcesarXmlDesdeStream(Stream xmlStream)
         {
             XmlDocument doc = new XmlDocument();
             doc.Load(xmlStream);
 
             if (!EsAttachedDocument(doc))
-                throw new InvalidDataException("El XML no es un documento válido.");
+            {
+                MessageBox.Show("El XML no es un documento válido.", "Error de Validación", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;  // Termina aquí sin excepción
+            }
 
-            // Crear el XmlNamespaceManager
+            if (!EsDocumentoCredito(doc))
+            {
+                MessageBox.Show("La factura no es de crédito. No se puede recepcionar.",
+                                "Error de Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return null;  // Simplemente termina el proceso sin continuar
+            }
+
             var ns = new XmlNamespaceManager(doc.NameTable);
             ns.AddNamespace("cac", "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2");
             ns.AddNamespace("cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2");
@@ -214,19 +254,19 @@ namespace EventosCadenaMercantiles.ViewModels
             {
                 if (node.LocalName == "SenderParty")
                 {
-                    ProcesarSenderParty(node, documento, ns); // ahora pasa el namespace manager
+                    ProcesarSenderParty(node, documento, ns);
                 }
                 else if (node.LocalName == "ReceiverParty")
                 {
-                    ValidarReceiverParty(node, documento, ns); // pasamos el namespace manager
+                    ValidarReceiverParty(node, documento, ns);
                 }
                 else if (node.LocalName == "Attachment")
                 {
-                    ProcesarAttachment(node, documento, ns); // pasamos el namespace manager
+                    ProcesarAttachment(node, documento, ns);
                 }
                 else if (node.LocalName == "ParentDocumentLineReference")
                 {
-                    ProcesarReferenciaDocumento(node, documento, ns);  // Aquí se pasa el namespace
+                    ProcesarReferenciaDocumento(node, documento, ns);
                 }
                 else if (node.LocalName == "ParentDocumentID")
                 {
@@ -239,6 +279,47 @@ namespace EventosCadenaMercantiles.ViewModels
         }
 
 
+        private bool EsDocumentoCredito(XmlDocument attachedDocument)
+        {
+            var ns = new XmlNamespaceManager(attachedDocument.NameTable);
+            ns.AddNamespace("cac", "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2");
+            ns.AddNamespace("cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2");
+
+            // Buscar el nodo Description (que tiene el XML de la factura embebida)
+            var descriptionNode = attachedDocument.SelectSingleNode("//cac:Attachment/cac:ExternalReference/cbc:Description", ns);
+            if (descriptionNode == null)
+            {
+                MessageBox.Show("No se encontró la factura embebida dentro del documento adjunto.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            // Cargar la factura embebida como un nuevo XmlDocument
+            var embeddedInvoice = new XmlDocument();
+            embeddedInvoice.LoadXml(descriptionNode.InnerText);
+
+            // Crear un nuevo namespace manager para la factura
+            var nsInvoice = new XmlNamespaceManager(embeddedInvoice.NameTable);
+            nsInvoice.AddNamespace("cac", "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2");
+            nsInvoice.AddNamespace("cbc", "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2");
+
+            // Buscar el PaymentMeans dentro de la factura embebida
+            var paymentMeansNode = embeddedInvoice.SelectSingleNode("//cac:PaymentMeans", nsInvoice);
+            if (paymentMeansNode != null)
+            {
+                var idNode = paymentMeansNode.SelectSingleNode("cbc:ID", nsInvoice);
+                if (idNode != null && idNode.InnerText.Trim() == "2")
+                {
+                    return true; // Es crédito
+                }
+            }
+
+            return false; // No es crédito
+        }
+
+
+
+
+
         private bool EsAttachedDocument(XmlDocument doc)
         {
             return doc.DocumentElement?.FirstChild?.ParentNode?.LocalName == "AttachedDocument";
@@ -249,14 +330,21 @@ namespace EventosCadenaMercantiles.ViewModels
             var taxScheme = node.SelectSingleNode("cac:PartyTaxScheme", ns);
             if (taxScheme != null)
             {
+                var registrationName = taxScheme.SelectSingleNode("cbc:RegistrationName", ns);
                 var companyID = taxScheme.SelectSingleNode("cbc:CompanyID", ns);
+
+                if (registrationName != null)
+                {
+                    doc.Emisor = registrationName.InnerText;  // Aquí es donde pones el nombre
+                }
+
                 if (companyID != null)
                 {
-                    doc.Emisor = companyID.InnerText;
-                    doc.Identificacion = companyID.NextSibling?.InnerText;  // Esto puede necesitar ajuste dependiendo de la estructura
+                    doc.Identificacion = companyID.InnerText;  // Aquí es donde pones el NIT
                 }
             }
         }
+
 
 
         private void ValidarReceiverParty(XmlNode node, DocumentoAdjunto doc, XmlNamespaceManager ns)
@@ -265,20 +353,47 @@ namespace EventosCadenaMercantiles.ViewModels
             if (taxScheme != null)
             {
                 var companyIdNode = taxScheme.SelectSingleNode("cbc:CompanyID", ns);
-                var companyId = companyIdNode?.InnerText;
 
-                if (companyId != doc.Idnit)
+                if (companyIdNode == null)
                 {
-                    throw new InvalidOperationException("El identificador de la factura no corresponde al identificador del cliente.");
+                    MessageBox.Show("No se encontró el nodo CompanyID en ReceiverParty.",
+                                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                   return;
                 }
 
-                var schemeID = companyIdNode?.Attributes["schemeID"];
-                if (schemeID != null)
+                var nitEnXml = companyIdNode.InnerText;
+                var dvEnXml = companyIdNode.Attributes["schemeID"]?.Value;
+
+                var nitEsperado = "75036432"; // Esto es solo para pruebas, después lo cambias a leer de configuración o de la base de datos
+                var dvEsperado = "7";
+
+                if (nitEnXml != nitEsperado)
                 {
-                    schemeID.InnerText = doc.Dv;
+                    MessageBox.Show($"El NIT recibido ({nitEnXml}) no coincide con el esperado ({nitEsperado}).",
+                                    "Error de Validación", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
                 }
+
+                if (dvEnXml != dvEsperado)
+                {
+                    MessageBox.Show($"El DV recibido ({dvEnXml ?? "(no definido)"}) no coincide con el esperado ({dvEsperado}).",
+                                    "Error de Validación", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                doc.Idnit = nitEnXml;
+                doc.Dv = dvEnXml;
+            }
+            else
+            {
+                MessageBox.Show("No se encontró el nodo PartyTaxScheme en ReceiverParty.",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
         }
+
+
+
 
 
         private void ProcesarAttachment(XmlNode attachmentNode, DocumentoAdjunto documento, XmlNamespaceManager ns)
@@ -340,6 +455,7 @@ namespace EventosCadenaMercantiles.ViewModels
 
         private void RefrescarVista()
         {
+            LoadEventos();
             MessageBox.Show("Vista refrescada.");
         }
 

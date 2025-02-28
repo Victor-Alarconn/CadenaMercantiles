@@ -127,6 +127,7 @@
     <Compile Include="Services\DatabaseInitializer.cs" />
     <Compile Include="Services\DatosEmpresaService.cs" />
     <Compile Include="Services\EmpresaService.cs" />
+    <Compile Include="Services\EnvioCorreoService.cs" />
     <Compile Include="Services\EquipoIdentificador.cs" />
     <Compile Include="Services\EventosService.cs" />
     <Compile Include="ViewModels\ActivacionViewModel.cs" />
