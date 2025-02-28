@@ -10,6 +10,10 @@
         ResizeMode="CanResize"
         WindowStyle="SingleBorderWindow"
         MouseDown="Window_MouseDown">
+    <Window.DataContext>
+        <local:HomeViewModel />
+    </Window.DataContext>
+
 
 
     <Window.Background>
@@ -87,6 +91,13 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
+        <!-- Logo de la empresa -->
+        <Image Grid.Column="1" Grid.Row="0"
+               Width="100" Height="100" 
+               Margin="525,10,0,0" 
+               HorizontalAlignment="Left" VerticalAlignment="Top"
+               Source="{Binding LogoEmpresa}" />
+
         <Grid Grid.Column="1" VerticalAlignment="Top" Margin="738,15,20,0"  >
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
@@ -153,27 +164,38 @@
             </Grid.ColumnDefinitions>
 
             <!-- Contenido de la búsqueda -->
-            <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="23,45,233,-36">
+            <!-- Contenido de la búsqueda con borde específico -->
+            <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="-13,45,303,-12">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="429*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Label Buscar -->
-                <Label Content="Buscar" Foreground="White" HorizontalAlignment="Left" FontWeight="Bold" VerticalAlignment="Center" Height="26" Margin="10,0,0,0" Grid.Column="0" />
+                <Border BorderBrush="White" BorderThickness="1" CornerRadius="5" Padding="10" Margin="23,-10,70,24" Grid.ColumnSpan="2">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
 
-                <!-- TextBox Buscar -->
-                <TextBox x:Name="TxtBusqueda" ToolTip="Para buscar presione ENTER" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="10,0,0,0" TextWrapping="Wrap" Height="24" Grid.Column="1"/>
+                        <!-- Label Buscar -->
+                        <Label Content="Buscar" Foreground="White" HorizontalAlignment="Left" FontWeight="Bold" VerticalAlignment="Center" Height="26" Margin="10,0,0,0" Grid.Column="0" />
 
-                <!-- Botón de búsqueda -->
-                <Button Height="25" Background="Transparent" BorderBrush="White" Width="60" x:Name="BtnBuscar" Margin="5,0,0,0" Grid.Column="2">
-                    <Image Source="C:/Users/usuario/source/repos/CadenaMercantiles/EventosCadenaMercantiles/Imagenes/search.png" HorizontalAlignment="Center"/>
-                </Button>
+                        <!-- TextBox Buscar -->
+                        <TextBox x:Name="TxtBusqueda" ToolTip="Para buscar presione ENTER" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="10,0,0,0" TextWrapping="Wrap" Height="24" Grid.Column="1"/>
+
+                        <!-- Botón de búsqueda -->
+                        <Button Height="25" Click="BtnBuscar_Click" Background="Transparent" BorderBrush="White" Width="60" x:Name="BtnBuscar" Margin="5,0,0,0" Grid.Column="2">
+                            <Image Source="C:/Users/usuario/source/repos/CadenaMercantiles/EventosCadenaMercantiles/Imagenes/search.png" HorizontalAlignment="Center"/>
+                        </Button>
+                    </Grid>
+                </Border>
             </Grid>
 
+
             <!-- Filtros de Fecha -->
-            <Grid Grid.ColumnSpan="2" Margin="239,4,-244,-5" Grid.Column="1" Grid.Row="2">
+            <Grid Grid.ColumnSpan="2" Margin="266,0,-246,50" Grid.Column="1" Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="67*" />
                     <ColumnDefinition Width="190*" />
@@ -194,7 +216,7 @@
             </Grid>
 
             <!-- Filtros de ComboBox -->
-            <Grid Grid.ColumnSpan="2" Margin="156,45,-328,-35" Grid.Row="2" Grid.Column="1">
+            <Grid Grid.ColumnSpan="2" Margin="187,45,-328,25" Grid.Row="2" Grid.Column="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="141*" />
                     <ColumnDefinition Width="145*"/>
