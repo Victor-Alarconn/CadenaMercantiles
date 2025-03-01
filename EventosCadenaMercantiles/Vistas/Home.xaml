@@ -10,9 +10,7 @@
         ResizeMode="CanResize"
         WindowStyle="SingleBorderWindow"
         MouseDown="Window_MouseDown">
-    <Window.DataContext>
-        <local:HomeViewModel />
-    </Window.DataContext>
+
 
 
 
@@ -165,13 +163,13 @@
 
             <!-- Contenido de la búsqueda -->
             <!-- Contenido de la búsqueda con borde específico -->
-            <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="-13,45,303,-12">
+            <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="-14,34,304,-1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="40*"/>
                     <ColumnDefinition Width="429*"/>
                 </Grid.ColumnDefinitions>
 
-                <Border BorderBrush="White" BorderThickness="1" CornerRadius="5" Padding="10" Margin="23,-10,70,24" Grid.ColumnSpan="2">
+                <Border BorderBrush="White" BorderThickness="1" CornerRadius="5" Padding="10" Margin="24,-14,69,28" Grid.ColumnSpan="2">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -186,8 +184,8 @@
                         <TextBox x:Name="TxtBusqueda" ToolTip="Para buscar presione ENTER" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="10,0,0,0" TextWrapping="Wrap" Height="24" Grid.Column="1"/>
 
                         <!-- Botón de búsqueda -->
-                        <Button Height="25" Click="BtnBuscar_Click" Background="Transparent" BorderBrush="White" Width="60" x:Name="BtnBuscar" Margin="5,0,0,0" Grid.Column="2">
-                            <Image Source="C:/Users/usuario/source/repos/CadenaMercantiles/EventosCadenaMercantiles/Imagenes/search.png" HorizontalAlignment="Center"/>
+                        <Button Height="25"  Background="Transparent" BorderBrush="White" Width="60" x:Name="BtnBuscar" Margin="5,0,0,0" Grid.Column="2">
+                            <Image Source="/Imagenes/search.png" HorizontalAlignment="Center"/>
                         </Button>
                     </Grid>
                 </Border>
@@ -216,18 +214,16 @@
             </Grid>
 
             <!-- Filtros de ComboBox -->
-            <Grid Grid.ColumnSpan="2" Margin="187,45,-328,25" Grid.Row="2" Grid.Column="1">
+            <Grid Grid.ColumnSpan="2" Margin="334,36,-74,34" Grid.Row="2" Grid.Column="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="141*" />
-                    <ColumnDefinition Width="145*"/>
-                    <ColumnDefinition Width="81*"/>
-                    <ColumnDefinition Width="166*"/>
-                    <ColumnDefinition Width="224*" />
-                   
+                    <!-- Tres columnas con distribución proporcional -->
+                    <ColumnDefinition Width="161*"/>
+                    <ColumnDefinition Width="237*"/>
+                    <ColumnDefinition Width="149*"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- Filtro Evento -->
-                <ComboBox x:Name="filtroevento"  Grid.Row="0" Margin="13,0,13,0" Grid.Column="1">
+                <ComboBox x:Name="filtroevento" Margin="10,10,41,10" Grid.Column="0">
                     <ComboBoxItem IsSelected="True">Filtrar Eventos</ComboBoxItem>
                     <ComboBoxItem>ACUSE_DOCUMENTO</ComboBoxItem>
                     <ComboBoxItem>RECIBO_SERVICIO</ComboBoxItem>
@@ -236,13 +232,14 @@
                 </ComboBox>
 
                 <!-- Filtro Codigo -->
-                <ComboBox x:Name="filtrocodigo"  Grid.Row="0" Margin="53,0,0,0" Grid.Column="3">
+                <ComboBox x:Name="filtrocodigo" Margin="69,10,97,10" Grid.Column="1">
                     <ComboBoxItem IsSelected="True">Filtrar Codigo</ComboBoxItem>
                     <ComboBoxItem>EXITOSO</ComboBoxItem>
                     <ComboBoxItem>ERROR</ComboBoxItem>
                     <ComboBoxItem>ERRORDIAN</ComboBoxItem>
                 </ComboBox>
             </Grid>
+
         </Grid>
 
 
