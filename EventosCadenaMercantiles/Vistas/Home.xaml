@@ -181,7 +181,7 @@
                         <Label Content="Buscar" Foreground="White" HorizontalAlignment="Left" FontWeight="Bold" VerticalAlignment="Center" Height="26" Margin="10,0,0,0" Grid.Column="0" />
 
                         <!-- TextBox Buscar -->
-                        <TextBox x:Name="TxtBusqueda" ToolTip="Para buscar presione ENTER" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="10,0,0,0" TextWrapping="Wrap" Height="24" Grid.Column="1"/>
+                        <TextBox x:Name="TxtBusqueda" ToolTip="Para buscar presione ENTER" VerticalAlignment="Center" Margin="82,0,0,0" TextWrapping="Wrap" Height="24" Grid.ColumnSpan="2"/>
 
                         <!-- Botón de búsqueda -->
                         <Button Height="25"  Background="Transparent" BorderBrush="White" Width="60" x:Name="BtnBuscar" Margin="5,0,0,0" Grid.Column="2">
