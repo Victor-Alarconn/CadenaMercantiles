@@ -89,6 +89,14 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
+        <Grid>
+            <!-- Resto de tu diseño -->
+            <Button Content="Ver Informes"
+                HorizontalAlignment="Right" VerticalAlignment="Top"
+                Margin="0,118,-948,0" Width="120" Height="40"
+                Click="OpenInformesEventosView"/>
+        </Grid>
+        
         <!-- Logo de la empresa -->
         <Image Grid.Column="1" Grid.Row="0"
                Width="100" Height="100" 

@@ -26,6 +26,13 @@ namespace EventosCadenaMercantiles.Vistas
             }
         }
 
+        private void OpenInformesEventosView(object sender, RoutedEventArgs e)
+        {
+            InformesEventos informesEventosWindow = new InformesEventos();
+            informesEventosWindow.Show();
+        }
+
+
     }
 
 }
