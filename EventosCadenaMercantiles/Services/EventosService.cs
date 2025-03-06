@@ -7,8 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ClosedXML.Excel;
-using System.Collections.Generic;
-using EventosCadenaMercantiles.Modelos;
 using Microsoft.Win32;
 
 

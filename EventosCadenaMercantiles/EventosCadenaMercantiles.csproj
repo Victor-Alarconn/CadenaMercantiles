@@ -170,9 +170,9 @@
     </Compile>
     <Compile Include="Vistas\InformesEventos.xaml.cs">
       <DependentUpon>InformesEventos.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\SplashScreenWindow.xaml.cs">
       <DependentUpon>SplashScreenWindow.xaml</DependentUpon>
-
     </Compile>
     <Compile Include="Vistas\VentanaClaveVista.xaml.cs">
       <DependentUpon>VentanaClaveVista.xaml</DependentUpon>
@@ -194,6 +194,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Vistas\InformesEventos.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Vistas\SplashScreenWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
