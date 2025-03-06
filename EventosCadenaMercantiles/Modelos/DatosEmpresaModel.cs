@@ -15,6 +15,7 @@ namespace EventosCadenaMercantiles.Modelos
         public string DtNombre { get; set; }
         public string DtNombre2 { get; set; }
         public string DtClave { get; set; }
+
     }
 }
 
