@@ -1,0 +1,45 @@
+﻿<Window x:Class="EventosCadenaMercantiles.Vistas.InformesEventos"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EventosCadenaMercantiles.ViewModels"
+        mc:Ignorable="d"
+        Title="Informes de Eventos" Height="450" Width="800">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Filtros -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left">
+            <DatePicker x:Name="dpStartDate" Width="120"/>
+            <DatePicker x:Name="dpEndDate" Width="120" Margin="5,0"/>
+            <ComboBox x:Name="cbTipoEvento" Width="150" Margin="5,0">
+                <ComboBoxItem Content="ACUSE_DOCUMENTO"/>
+                <ComboBoxItem Content="RECIBO_SERVICIO"/>
+                <ComboBoxItem Content="ACEPTACION_EXPRESA"/>
+                <ComboBoxItem Content="RECLAMO"/>
+            </ComboBox>
+            <Button Content="Filtrar" Width="100" Margin="5,0" Click="Filter_Click"/>
+            <Button Content="Exportar Excel" Width="100" Margin="5,0" Click="ExportToExcel_Click"/>
+        </StackPanel>
+
+        <!-- Tabla de resultados -->
+        <DataGrid x:Name="dgEventos" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding Eventos}" Margin="0,5">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="# Factura" Binding="{Binding EvenDocum}"/>
+                <DataGridTextColumn Header="Nombre del Emisor" Binding="{Binding EvenReceptor}"/>
+                <DataGridTextColumn Header="Identificación" Binding="{Binding EvenIdentif}"/>
+                <DataGridTextColumn Header="Fecha" Binding="{Binding EvenFecha}"/>
+                <DataGridTextColumn Header="Tipo de Evento" Binding="{Binding EvenEvento}"/>
+                <DataGridTextColumn Header="Código" Binding="{Binding EvenCodigo}"/>
+                <DataGridTextColumn Header="Respuesta" Binding="{Binding EvenResponse}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+</Window>
