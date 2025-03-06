@@ -145,15 +145,36 @@ namespace EventosCadenaMercantiles.ViewModels
             var eventosLista = EventosService.ObtenerEventos(fechaInicio, fechaFin);
 
             Eventos.Clear();
+
             foreach (var evento in eventosLista)
             {
                 if (string.IsNullOrWhiteSpace(evento.EvenDocum) || string.IsNullOrWhiteSpace(evento.EvenEvento))
                 {
                     continue; // Ignorar registros vacíos
                 }
+
+                // Si está en "VALIDANDO", hacemos la consulta cruzada
+                if (evento.EvenCodigo == "VALIDANDO")
+                {
+                    if (RecepcionService.ExisteDocumentoEnValidacion(evento.EvenDocum)) // Validar contra doc_recepcion
+                    {
+                        // Actualizar doc_recepcion: estado = 1
+                        RecepcionService.MarcarComoConsultado(evento.EvenDocum);
+
+                        // Actualizar evento: EvenCodigo = PREPARADO y EvenResponse = Documento Listo Para Recepcionar
+                        evento.EvenCodigo = "PREPARADO";
+                        evento.EvenResponse = "Documento Listo Para Recepcionar";
+                        evento.EvenEvento = "Listo";
+
+                        // Actualizar en BD eventos
+                        EventosService.ActualizarEvento(evento);
+                    }
+                }
+
                 Eventos.Add(evento);
             }
         }
+
 
 
         private void AbrirQR(EventosModel evento)
@@ -361,47 +382,56 @@ namespace EventosCadenaMercantiles.ViewModels
         private void ValidarReceiverParty(XmlNode node, DocumentoAdjunto doc, XmlNamespaceManager ns)
         {
             var taxScheme = node.SelectSingleNode("cac:PartyTaxScheme", ns);
-            if (taxScheme != null)
-            {
-                var companyIdNode = taxScheme.SelectSingleNode("cbc:CompanyID", ns);
-
-                if (companyIdNode == null)
-                {
-                    MessageBox.Show("No se encontró el nodo CompanyID en ReceiverParty.",
-                                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                   return;
-                }
-
-                var nitEnXml = companyIdNode.InnerText;
-                var dvEnXml = companyIdNode.Attributes["schemeID"]?.Value;
-
-                var nitEsperado = "75036432"; // Esto es solo para pruebas, después lo cambias a leer de configuración o de la base de datos
-                var dvEsperado = "7";
-
-                if (nitEnXml != nitEsperado)
-                {
-                    MessageBox.Show($"El NIT recibido ({nitEnXml}) no coincide con el esperado ({nitEsperado}).",
-                                    "Error de Validación", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                if (dvEnXml != dvEsperado)
-                {
-                    MessageBox.Show($"El DV recibido ({dvEnXml ?? "(no definido)"}) no coincide con el esperado ({dvEsperado}).",
-                                    "Error de Validación", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                doc.Idnit = nitEnXml;
-                doc.Dv = dvEnXml;
-            }
-            else
+            if (taxScheme == null)
             {
                 MessageBox.Show("No se encontró el nodo PartyTaxScheme en ReceiverParty.",
                                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
+            // Extraer el RegistrationName (nombre del receptor)
+            var registrationNameNode = taxScheme.SelectSingleNode("cbc:RegistrationName", ns);
+            if (registrationNameNode == null)
+            {
+                MessageBox.Show("No se encontró el nombre del receptor (RegistrationName) en PartyTaxScheme.",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            doc.Receptor = registrationNameNode.InnerText.Trim();  // Guardamos el nombre en el documento
+
+            // Extraer el CompanyID (NIT)
+            var companyIdNode = taxScheme.SelectSingleNode("cbc:CompanyID", ns);
+            if (companyIdNode == null)
+            {
+                MessageBox.Show("No se encontró el nodo CompanyID en ReceiverParty.",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var nitEnXml = companyIdNode.InnerText;
+            var dvEnXml = companyIdNode.Attributes["schemeID"]?.Value;
+
+            var nitEsperado = "75036432"; // Para pruebas, ajusta para que lo leas de configuración o BD
+            var dvEsperado = "7";
+
+            if (nitEnXml != nitEsperado)
+            {
+                MessageBox.Show($"El NIT recibido ({nitEnXml}) no coincide con el esperado ({nitEsperado}).",
+                                "Error de Validación", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (dvEnXml != dvEsperado)
+            {
+                MessageBox.Show($"El DV recibido ({dvEnXml ?? "(no definido)"}) no coincide con el esperado ({dvEsperado}).",
+                                "Error de Validación", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            doc.Idnit = nitEnXml;
+            doc.Dv = dvEnXml;
         }
+
 
 
 
@@ -538,7 +568,7 @@ namespace EventosCadenaMercantiles.ViewModels
         {
             // Construir la ruta relativa a la carpeta de imágenes dentro del proyecto
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
-            string relativePath = @"..\..\Imagenes\LogoEmp.png"; // Ajusta la ruta relativa según la estructura de carpetas
+            string relativePath = @"..\..\Imagenes\LogoEmp.png";
             string logoPath = Path.Combine(basePath, relativePath);
 
             if (File.Exists(logoPath))
@@ -549,7 +579,7 @@ namespace EventosCadenaMercantiles.ViewModels
             {
                 Console.WriteLine("No se encontró el logo en: " + logoPath); // Mensaje de error en la consola
                                                                              // Cargar una imagen por defecto si no existe el logo
-                LogoEmpresa = new BitmapImage(new Uri("pack://application:,,,/Imagenes/DefaultLogo.png"));
+                LogoEmpresa = new BitmapImage(new Uri("/Imagenes/DefaultLogo.png"));
             }
         }
 

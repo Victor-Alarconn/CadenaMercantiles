@@ -10,6 +10,7 @@ namespace EventosCadenaMercantiles.Modelos
     {
         public string Emisor { get; set; }
         public string Identificacion { get; set; }
+        public string Receptor { get; set; }
         public string Dv { get; set; }
         public string Idnit {  get; set; }
         public string Cufe { get; set; }

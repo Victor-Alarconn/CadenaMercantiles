@@ -186,8 +186,8 @@
                         <TextBox x:Name="TxtBusqueda" ToolTip="Para buscar presione ENTER" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="10,0,0,0" TextWrapping="Wrap" Height="24" Grid.Column="1"/>
 
                         <!-- Botón de búsqueda -->
-                        <Button Height="25" Click="BtnBuscar_Click" Background="Transparent" BorderBrush="White" Width="60" x:Name="BtnBuscar" Margin="5,0,0,0" Grid.Column="2">
-                            <Image Source="C:/Users/usuario/source/repos/CadenaMercantiles/EventosCadenaMercantiles/Imagenes/search.png" HorizontalAlignment="Center"/>
+                        <Button Height="25"  Background="Transparent" BorderBrush="White" Width="60" x:Name="BtnBuscar" Margin="5,0,0,0" Grid.Column="2">
+                            <Image Source="/Imagenes/search.png" HorizontalAlignment="Center"/>
                         </Button>
                     </Grid>
                 </Border>

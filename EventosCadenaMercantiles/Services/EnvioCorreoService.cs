@@ -25,7 +25,7 @@ namespace EventosCadenaMercantiles.Services
             {
                 var mensaje = new MailMessage
                 {
-                    From = new MailAddress("facturaelectronica@rmsoft.com.co", documento.Emisor),
+                    From = new MailAddress("facturaelectronica@rmsoft.com.co", documento.Receptor),
                     Subject = $"{documento.Identificacion}; {documento.Emisor}; {documento.PrefijoFactura}; 01; {documento.Emisor}",
                     Body = "Se adjunta archivo ZIP con el documento electrónico.",
                     IsBodyHtml = false
