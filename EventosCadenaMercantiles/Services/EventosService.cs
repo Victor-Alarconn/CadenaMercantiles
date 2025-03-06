@@ -12,6 +12,9 @@ using EventosCadenaMercantiles.Modelos;
 using Microsoft.Win32;
 
 
+using System.Windows;
+
+
 namespace EventosCadenaMercantiles.Services
 {
     public class EventosService
@@ -71,9 +74,9 @@ namespace EventosCadenaMercantiles.Services
             command.Parameters.AddWithValue("?", documento.Emisor);
             command.Parameters.AddWithValue("?", documento.Identificacion);
             command.Parameters.AddWithValue("?", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-            command.Parameters.AddWithValue("?", "Validando la Factura");
+            command.Parameters.AddWithValue("?", "Validando Documento");
             command.Parameters.AddWithValue("?", documento.XmlBase64);
-            command.Parameters.AddWithValue("?", "COD_ESPERA");
+            command.Parameters.AddWithValue("?", "VALIDANDO");
             command.Parameters.AddWithValue("?", "ESPERANDO RESPUESTA");
             command.Parameters.AddWithValue("?", documento.QRCode ?? "");
             command.Parameters.AddWithValue("?", documento.Cufe ?? "");
@@ -98,6 +101,7 @@ namespace EventosCadenaMercantiles.Services
                 }
             }
         }
+
 
         public static void ExportarEventosAExcel(IEnumerable<EventosModel> eventos, string filePath)
         {
@@ -132,6 +136,38 @@ namespace EventosCadenaMercantiles.Services
 
                 // Guardar el archivo en la ubicación especificada
                 workbook.SaveAs(filePath);
+            }
+        }
+
+
+
+        public static void ActualizarEvento(EventosModel evento)
+        {
+            var connection = Conexion.ObtenerConexion();
+
+            try
+            {
+                connection.Open();
+
+                string query = "UPDATE eventos SET even_codigo = ?, even_response = ?, even_evento = ? WHERE even_docum = ?";
+                using (var command = new OdbcCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("?", evento.EvenCodigo);
+                    command.Parameters.AddWithValue("?", evento.EvenResponse);
+                    command.Parameters.AddWithValue("?", evento.EvenEvento);  // Ojo: estaba invertido con EvenDocum
+                    command.Parameters.AddWithValue("?", evento.EvenDocum);   // El docum va al final (condición WHERE)
+
+                    command.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al actualizar el evento {evento.EvenDocum}: {ex.Message}",
+                                "Error de Actualización", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                connection.Close();
             }
         }
 
