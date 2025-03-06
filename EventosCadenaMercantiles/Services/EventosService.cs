@@ -6,7 +6,14 @@ using System.Data.Odbc;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
+using System.Collections.Generic;
+using EventosCadenaMercantiles.Modelos;
+using Microsoft.Win32;
+
+
 using System.Windows;
+
 
 namespace EventosCadenaMercantiles.Services
 {
@@ -95,6 +102,45 @@ namespace EventosCadenaMercantiles.Services
             }
         }
 
+
+        public static void ExportarEventosAExcel(IEnumerable<EventosModel> eventos, string filePath)
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Eventos");
+
+                // Encabezados de las columnas
+                worksheet.Cell(1, 1).Value = "Documento";
+                worksheet.Cell(1, 2).Value = "Nombre del Emisor";
+                worksheet.Cell(1, 3).Value = "Identificación";
+                worksheet.Cell(1, 4).Value = "Fecha";
+                worksheet.Cell(1, 5).Value = "Tipo de Evento";
+                worksheet.Cell(1, 6).Value = "Código";
+                worksheet.Cell(1, 7).Value = "Respuesta";
+
+                int currentRow = 2;
+                foreach (var evento in eventos)
+                {
+                    worksheet.Cell(currentRow, 1).Value = evento.EvenDocum;
+                    worksheet.Cell(currentRow, 2).Value = evento.EvenReceptor;
+                    worksheet.Cell(currentRow, 3).Value = evento.EvenIdentif;
+                    worksheet.Cell(currentRow, 4).Value = evento.EvenFecha;
+                    worksheet.Cell(currentRow, 5).Value = evento.EvenEvento;
+                    worksheet.Cell(currentRow, 6).Value = evento.EvenCodigo;
+                    worksheet.Cell(currentRow, 7).Value = evento.EvenResponse;
+                    currentRow++;
+                }
+
+                // Ajustar columnas al contenido
+                worksheet.Columns().AdjustToContents();
+
+                // Guardar el archivo en la ubicación especificada
+                workbook.SaveAs(filePath);
+            }
+        }
+
+
+
         public static void ActualizarEvento(EventosModel evento)
         {
             var connection = Conexion.ObtenerConexion();
@@ -124,6 +170,7 @@ namespace EventosCadenaMercantiles.Services
                 connection.Close();
             }
         }
+
 
 
     }
