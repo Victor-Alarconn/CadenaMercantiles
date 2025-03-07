@@ -30,6 +30,8 @@ namespace EventosCadenaMercantiles.ViewModels
         private string _textoEvento;
         private string _textoCoRechazo;
         private ImageSource _logoEmpresa;
+        private string _tipoEventoSeleccionado;
+
 
         private ObservableCollection<EventosModel> _eventos;
         public ObservableCollection<EventosModel> Eventos
@@ -552,6 +554,36 @@ namespace EventosCadenaMercantiles.ViewModels
         }
 
         // Método para manejar el cambio de selección del ComboBox "Filtro de evento"
+
+        public string TipoEventoSeleccionado
+        {
+            get => _tipoEventoSeleccionado;
+            set
+            {
+                if (_tipoEventoSeleccionado != value)
+                {
+                    _tipoEventoSeleccionado = value;
+                    OnPropertyChanged(nameof(TipoEventoSeleccionado));
+                    FiltrarEventos(); // Método que filtra los eventos basado en el tipo seleccionado
+                }
+            }
+        }
+
+        private void FiltrarEventos()
+        {
+            if (!string.IsNullOrEmpty(TipoEventoSeleccionado))
+            {
+                var eventosFiltrados = EventosService.ObtenerEventos(DateTime.MinValue, DateTime.MaxValue) // Asegúrate de ajustar las fechas según lo necesites
+                                                      .Where(e => e.EvenEvento == TipoEventoSeleccionado)
+                                                      .ToList();
+                Eventos = new ObservableCollection<EventosModel>(eventosFiltrados);
+            }
+            else
+            {
+                LoadEventos(); // Recarga todos los eventos si no hay un tipo seleccionado
+            }
+        }
+
         private void Filtroevento_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Aquí se puede agregar la lógica para filtrar por evento si es necesario en el futuro
