@@ -222,6 +222,7 @@
             </Grid>
 
             <!-- Filtros de ComboBox -->
+            <!-- Filtros de ComboBox -->
             <Grid Grid.ColumnSpan="2" Margin="334,36,-74,34" Grid.Row="2" Grid.Column="1">
                 <Grid.ColumnDefinitions>
                     <!-- Tres columnas con distribución proporcional -->
@@ -231,8 +232,6 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Filtro Evento -->
-                <!-- Contenedor para el filtro de eventos con etiqueta y combobox -->
-                <!-- Contenedor para el filtro de eventos con etiqueta y combobox -->
                 <Grid Grid.Column="0" Margin="10,10,41,10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -241,20 +240,20 @@
                         <!-- Columna para el ComboBox -->
                     </Grid.ColumnDefinitions>
 
-                    <!-- Label para descripción -->
+                    <!-- Label para descripción del filtro de eventos -->
                     <Label Content="Filtrar eventos"
-           VerticalAlignment="Center"
-           Grid.Column="0"
-           Margin="0,0,5,0"
-           Foreground="White"
-           FontWeight="Bold"/>
+               VerticalAlignment="Center"
+               Grid.Column="0"
+               Margin="0,0,5,0"
+               Foreground="White"
+               FontWeight="Bold"/>
 
                     <!-- ComboBox para selección de evento -->
                     <ComboBox x:Name="filtroevento"
-              SelectedValue="{Binding TipoEventoSeleccionado, Mode=TwoWay}"
-              DisplayMemberPath="Content"
-              SelectedValuePath="Content"
-              Grid.Column="1">
+                  SelectedValue="{Binding TipoEventoSeleccionado, Mode=TwoWay}"
+                  DisplayMemberPath="Content"
+                  SelectedValuePath="Content"
+                  Grid.Column="1">
                         <ComboBoxItem Content="ACUSE_DOCUMENTO"/>
                         <ComboBoxItem Content="RECIBO_SERVICIO"/>
                         <ComboBoxItem Content="ACEPTACION_EXPRESA"/>
@@ -262,16 +261,34 @@
                     </ComboBox>
                 </Grid>
 
-
-
-
                 <!-- Filtro Codigo -->
-                <ComboBox x:Name="filtrocodigo" Margin="69,10,97,10" Grid.Column="1">
-                    <ComboBoxItem IsSelected="True">Filtrar Codigo</ComboBoxItem>
-                    <ComboBoxItem>EXITOSO</ComboBoxItem>
-                    <ComboBoxItem>ERROR</ComboBoxItem>
-                    <ComboBoxItem>ERRORDIAN</ComboBoxItem>
-                </ComboBox>
+                <Grid Grid.Column="1" Margin="69,10,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Columna para el Label -->
+                        <ColumnDefinition Width="*"/>
+                        <!-- Columna para el ComboBox -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Label para descripción del filtro de código -->
+                    <Label Content="Filtrar código"
+               VerticalAlignment="Center"
+               Grid.Column="0"
+               Margin="0,0,5,0"
+               Foreground="White"
+               FontWeight="Bold"/>
+
+                    <!-- ComboBox para selección de código -->
+                    <ComboBox x:Name="filtrocodigo"
+                  SelectedValue="{Binding CodigoEventoSeleccionado, Mode=TwoWay}"
+                  DisplayMemberPath="Content"
+                  SelectedValuePath="Content"
+                  Grid.Column="1">
+                        <ComboBoxItem Content="EXITOSO"/>
+                        <ComboBoxItem Content="ERROR"/>
+                        <ComboBoxItem Content="ERRORDIAN"/>
+                    </ComboBox>
+                </Grid>
             </Grid>
 
         </Grid>

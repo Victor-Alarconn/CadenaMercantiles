@@ -33,6 +33,7 @@ namespace EventosCadenaMercantiles.ViewModels
         private string _tipoEventoSeleccionado;
 
 
+
         private ObservableCollection<EventosModel> _eventos;
         public ObservableCollection<EventosModel> Eventos
         {
@@ -590,10 +591,7 @@ namespace EventosCadenaMercantiles.ViewModels
         }
 
         // Método para manejar el cambio de selección del ComboBox "Filtro de código"
-        private void Filtrocodigo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // Aquí se puede agregar la lógica para filtrar por código si es necesario en el futuro
-        }
+
 
 
         private void LoadCompanyLogo()
