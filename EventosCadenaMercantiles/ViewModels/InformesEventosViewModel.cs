@@ -5,6 +5,8 @@ using System.Linq;
 using EventosCadenaMercantiles.Modelos;
 using EventosCadenaMercantiles.Services;
 using Microsoft.Win32;
+using OxyPlot;
+using OxyPlot.Series;
 
 namespace EventosCadenaMercantiles.ViewModels
 {
@@ -13,6 +15,7 @@ namespace EventosCadenaMercantiles.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
 
         private ObservableCollection<EventosModel> _eventos;
+        private PlotModel _plotModel;
 
         public ObservableCollection<EventosModel> Eventos
         {
@@ -23,21 +26,66 @@ namespace EventosCadenaMercantiles.ViewModels
                 {
                     _eventos = value;
                     OnPropertyChanged(nameof(Eventos));
+                    UpdatePlotModel();
                 }
+            }
+        }
+
+        public PlotModel PlotModel
+        {
+            get => _plotModel;
+            private set
+            {
+                _plotModel = value;
+                OnPropertyChanged(nameof(PlotModel));
             }
         }
 
         public InformesEventosViewModel()
         {
             Eventos = new ObservableCollection<EventosModel>();
+            InitializePlotModel();
             // Cargar todos los eventos hasta la fecha actual
-            CargarEventos(DateTime.MinValue, DateTime.Now);  // Ajusta las fechas como consideres necesario
+            CargarEventos(DateTime.MinValue, DateTime.Now);
         }
 
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private void InitializePlotModel()
+        {
+            _plotModel = new PlotModel { Title = "Distribución de Eventos" };
+            _plotModel.Series.Add(new PieSeries());
+        }
+
+        private void UpdatePlotModel()
+        {
+            if (_plotModel != null && _plotModel.Series[0] is PieSeries series)
+            {
+                series.Slices.Clear();
+
+                // Verifica que Eventos no sea null antes de intentar operaciones sobre él
+                if (Eventos != null)
+                {
+                    var groupedData = Eventos.GroupBy(e => e.EvenEvento)
+                                             .Select(g => new { Evento = g.Key, Count = g.Count() });
+
+                    foreach (var data in groupedData)
+                    {
+                        series.Slices.Add(new PieSlice(data.Evento, data.Count) { IsExploded = true });
+                    }
+
+                    // Solo actualiza el plot si hay datos para mostrar
+                    if (groupedData.Any())
+                    {
+                        _plotModel.InvalidatePlot(true);
+                    }
+                }
+            }
+        }
+
 
         public void CargarEventos(DateTime desde, DateTime hasta)
         {

@@ -221,7 +221,7 @@
                 <DatePicker x:Name="datehasta" Width="152" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="80,0,0,0" Height="27" Grid.Column="2"/>
             </Grid>
 
-            <!-- Filtros de ComboBox -->
+            
             <!-- Filtros de ComboBox -->
             <Grid Grid.ColumnSpan="2" Margin="334,36,-74,34" Grid.Row="2" Grid.Column="1">
                 <Grid.ColumnDefinitions>
