@@ -13,7 +13,7 @@ namespace EventosCadenaMercantiles.Services
 {
     public static class EnvioCorreoService
     {
-        private const string CorreoDestino = "sistemas.rmsoft@gmail.com";
+        private const string CorreoDestino = "rmsoft@efacturacadenapru.com";
         private const string SmtpServidor = "smtp.resend.com";
         private const int SmtpPuerto = 587;
         private const string SmtpUsuario = "resend";
