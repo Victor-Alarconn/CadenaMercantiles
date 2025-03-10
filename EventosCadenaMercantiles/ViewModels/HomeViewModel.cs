@@ -30,6 +30,10 @@ namespace EventosCadenaMercantiles.ViewModels
         private string _textoEvento;
         private string _textoCoRechazo;
         private ImageSource _logoEmpresa;
+        private string _tipoEventoSeleccionado;
+        private string _codigoEventoSeleccionado;
+
+
 
         private ObservableCollection<EventosModel> _eventos;
         public ObservableCollection<EventosModel> Eventos
@@ -77,6 +81,38 @@ namespace EventosCadenaMercantiles.ViewModels
             get => _textoCoRechazo;
             set => SetProperty(ref _textoCoRechazo, value);
         }
+
+        public string TipoEventoSeleccionado
+        {
+            get => _tipoEventoSeleccionado;
+            set
+            {
+                if (_tipoEventoSeleccionado != value)
+                {
+                    _tipoEventoSeleccionado = value;
+                    OnPropertyChanged(nameof(TipoEventoSeleccionado));
+                    FiltrarEventos(); // Método que filtra los eventos basado en el tipo seleccionado
+                }
+            }
+        }
+
+
+         public string CodigoEventoSeleccionado
+        {
+            get => _codigoEventoSeleccionado;
+            set
+            {
+                if (_codigoEventoSeleccionado != value)
+                {
+                    _codigoEventoSeleccionado = value;
+                    OnPropertyChanged(nameof(CodigoEventoSeleccionado));
+                    FiltrarEventos();
+                }
+            }
+        }
+
+
+
 
         public ICommand AbrirArchivoCommand { get; }
         public ICommand RefrescarVistaCommand { get; }
@@ -548,20 +584,37 @@ namespace EventosCadenaMercantiles.ViewModels
         // Método para manejar el clic en el botón de búsqueda
         private void BtnBuscar_Click(object sender, RoutedEventArgs e)
         {
-            // Aquí se puede agregar la lógica de búsqueda si es necesario en el futuro
+            
         }
 
         // Método para manejar el cambio de selección del ComboBox "Filtro de evento"
+
+
+
+        private void FiltrarEventos()
+        {
+            var eventosFiltrados = EventosService.ObtenerEventos(DateTime.MinValue, DateTime.MaxValue);
+
+            if (!string.IsNullOrEmpty(TipoEventoSeleccionado))
+            {
+                eventosFiltrados = eventosFiltrados.Where(e => e.EvenEvento == TipoEventoSeleccionado).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(CodigoEventoSeleccionado))
+            {
+                eventosFiltrados = eventosFiltrados.Where(e => e.EvenCodigo == CodigoEventoSeleccionado).ToList();
+            }
+
+            Eventos = new ObservableCollection<EventosModel>(eventosFiltrados);
+        }
+
         private void Filtroevento_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Aquí se puede agregar la lógica para filtrar por evento si es necesario en el futuro
         }
 
         // Método para manejar el cambio de selección del ComboBox "Filtro de código"
-        private void Filtrocodigo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // Aquí se puede agregar la lógica para filtrar por código si es necesario en el futuro
-        }
+
 
 
         private void LoadCompanyLogo()
