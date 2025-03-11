@@ -78,6 +78,10 @@
 
     <!-- GRID PRINCIPAL -->
     <Grid Margin="20,10,20,20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="941*"/>
+            <ColumnDefinition Width="219*"/>
+        </Grid.ColumnDefinitions>
         <!-- Definir filas -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -87,7 +91,7 @@
         </Grid.RowDefinitions>
 
         <!-- === PARTE SUPERIOR === -->
-        <Grid Grid.Row="0" Margin="0,0,0,10">
+        <Grid Grid.Row="0" Margin="0,0,0,10" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <!-- Parte izquierda (Cargar archivo y Enviar evento) -->
@@ -106,7 +110,7 @@
                         <Image Source="pack://application:,,,/Imagenes/upload.png" Stretch="UniformToFill" Height="45" Width="50"/>
                     </Button>
                     <Label Content="Cargar .Zip" VerticalAlignment="Center" Foreground="Black" Margin="5,0,0,0"/>
-                    <Label Content="{Binding NombreArchivo}" FontWeight="Bold" Foreground="Green" Margin="10,0,0,0"/>
+                    <Label Content="{Binding NombreArchivo}" FontWeight="Bold" Foreground="Green" Margin="10,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <!-- Botón Enviar evento y combobox de Evento y CoRechazo -->
@@ -116,6 +120,7 @@
                         <Image Source="pack://application:,,,/Imagenes/send.png" Stretch="Uniform" Height="66" Width="69" RenderTransformOrigin="0.527,0.501"/>
                     </Button>
                     <Label Content="Enviar evento" VerticalAlignment="Center" Foreground="Black" Margin="5,0,0,0"/>
+                    <Label Content="{Binding NombreDocumento}" FontWeight="Bold" Foreground="Green" Margin="10,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </StackPanel>
 
                 <!-- Combobox Evento y CoRechazo -->
@@ -154,8 +159,21 @@
             </StackPanel>
 
             <!-- === PARTE CENTRAL === -->
-            <Image Grid.Column="1" Width="134" Height="100" HorizontalAlignment="Center" VerticalAlignment="Top" 
-        Source="{Binding LogoEmpresa}" Margin="0,34,0,0"/>
+            <Grid Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="0,5,0,15">
+                    <!-- Logo centrado arriba -->
+                    <Image Width="134" Height="100" HorizontalAlignment="Center" 
+               Source="{Binding LogoEmpresa}" Margin="0,0,0,10"/>
+
+                    <!-- Nombre de la empresa -->
+                    <Label Content="{Binding NombreEmpresa}" FontWeight="Bold" Foreground="Black" 
+               FontSize="16" HorizontalAlignment="Center"/>
+
+                    <!-- NIT de la empresa -->
+                    <Label Content="{Binding NitEmpresa}" Foreground="Gray" FontSize="14" 
+               HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
 
             <!-- === PARTE DERECHA === -->
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,10,0" Grid.Column="2">
@@ -184,7 +202,7 @@
         </Grid>
 
         <!-- === PARTE INFERIOR === -->
-        <Grid Margin="10,30,10,26" Grid.Row="1">
+        <Grid Margin="10,30,10,26" Grid.Row="1" Grid.ColumnSpan="2">
             <!-- Definimos dos filas -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -284,6 +302,7 @@
             <DataGrid x:Name="EventosDataGrid"
            AutoGenerateColumns="False"
            ItemsSource="{Binding Eventos}"
+           SelectedItem="{Binding EventoSeleccionado, Mode=TwoWay}"
            CanUserAddRows="False"
            Grid.Row="1"
            Margin="5"

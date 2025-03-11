@@ -33,7 +33,7 @@ namespace EventosCadenaMercantiles.ViewModels
         private string _tipoEventoSeleccionado;
         private string _codigoEventoSeleccionado;
         private bool _ignorarFiltrosIniciales = true; // Bandera para ignorar los filtros iniciales
-
+        private static readonly string archivoConexion = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "empresa.txt");
 
         private ObservableCollection<EventosModel> _eventos;
         public ObservableCollection<EventosModel> Eventos
@@ -43,6 +43,28 @@ namespace EventosCadenaMercantiles.ViewModels
             {
                 _eventos = value;
                 OnPropertyChanged(nameof(Eventos));
+            }
+        }
+
+        private string _nombreEmpresa;
+        public string NombreEmpresa
+        {
+            get => _nombreEmpresa;
+            set
+            {
+                _nombreEmpresa = value;
+                OnPropertyChanged(nameof(NombreEmpresa));
+            }
+        }
+
+        private string _nitEmpresa;
+        public string NitEmpresa
+        {
+            get => _nitEmpresa;
+            set
+            {
+                _nitEmpresa = value;
+                OnPropertyChanged(nameof(NitEmpresa));
             }
         }
 
@@ -132,7 +154,21 @@ namespace EventosCadenaMercantiles.ViewModels
             }
         }
 
+        private EventosModel _eventoSeleccionado;
+        public EventosModel EventoSeleccionado
+        {
+            get => _eventoSeleccionado;
+            set
+            {
+                _eventoSeleccionado = value;
+                OnPropertyChanged(nameof(EventoSeleccionado));
+                OnPropertyChanged(nameof(NombreDocumento)); // Notificar cambio al label
+            }
+        }
 
+
+        // Propiedad para mostrar en el Label
+        public string NombreDocumento => EventoSeleccionado?.EvenDocum;
 
 
         public ICommand AbrirArchivoCommand { get; }
@@ -188,8 +224,8 @@ namespace EventosCadenaMercantiles.ViewModels
             CargarEventosCommand = new RelayCommand<object>(param => LoadEventos());
 
             LoadCompanyLogo();
-
-            // ✅ Carga inicial de eventos SIN filtrar
+            CargarDatosEmpresa();
+            //  Carga inicial de eventos SIN filtrar
             LoadEventos();
 
             ListaEventos = new ObservableCollection<string>
@@ -652,14 +688,14 @@ namespace EventosCadenaMercantiles.ViewModels
         // Método para manejar el clic en el botón de búsqueda
         private void BtnBuscar_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
         // Método para manejar el cambio de selección del ComboBox "Filtro de evento"
 
 
 
-       
+
 
         private void Filtroevento_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -686,6 +722,38 @@ namespace EventosCadenaMercantiles.ViewModels
                 Console.WriteLine("No se encontró el logo en: " + logoPath); // Mensaje de error en la consola
                                                                              // Cargar una imagen por defecto si no existe el logo
                 LogoEmpresa = new BitmapImage(new Uri("/Imagenes/DefaultLogo.png"));
+            }
+        }
+
+        private void CargarDatosEmpresa()
+        {
+            try
+            {
+                if (File.Exists(archivoConexion))
+                {
+                    var lineas = File.ReadAllLines(archivoConexion);
+
+                    if (lineas.Length >= 2)
+                    {
+                        NombreEmpresa = lineas[0];
+                        NitEmpresa = lineas[1];
+                    }
+                    else
+                    {
+                        NombreEmpresa = "Datos incompletos";
+                        NitEmpresa = "Datos incompletos";
+                    }
+                }
+                else
+                {
+                    NombreEmpresa = "Empresa no encontrada";
+                    NitEmpresa = "NIT no disponible";
+                }
+            }
+            catch (Exception ex)
+            {
+                NombreEmpresa = "Error al cargar";
+                NitEmpresa = ex.Message;
             }
         }
 
