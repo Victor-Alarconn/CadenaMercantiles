@@ -23,7 +23,7 @@ namespace EventosCadenaMercantiles.ViewModels
             set
             {
                 if (_eventos != value)
-                {
+                { 
                     _eventos = value;
                     OnPropertyChanged(nameof(Eventos));
                     UpdatePlotModel();
