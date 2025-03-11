@@ -32,7 +32,7 @@ namespace EventosCadenaMercantiles.ViewModels
         private ImageSource _logoEmpresa;
         private string _tipoEventoSeleccionado;
         private string _codigoEventoSeleccionado;
-
+        private bool _ignorarFiltrosIniciales = true; // Bandera para ignorar los filtros iniciales
 
 
         private ObservableCollection<EventosModel> _eventos;
@@ -82,6 +82,17 @@ namespace EventosCadenaMercantiles.ViewModels
             set => SetProperty(ref _textoCoRechazo, value);
         }
 
+        private ObservableCollection<string> _listaEventos;
+        public ObservableCollection<string> ListaEventos
+        {
+            get => _listaEventos;
+            set
+            {
+                _listaEventos = value;
+                OnPropertyChanged(nameof(ListaEventos));
+            }
+        }
+
         public string TipoEventoSeleccionado
         {
             get => _tipoEventoSeleccionado;
@@ -96,8 +107,18 @@ namespace EventosCadenaMercantiles.ViewModels
             }
         }
 
+        private ObservableCollection<string> _listaCodigos;
+        public ObservableCollection<string> ListaCodigos
+        {
+            get => _listaCodigos;
+            set
+            {
+                _listaCodigos = value;
+                OnPropertyChanged(nameof(ListaCodigos));
+            }
+        }
 
-         public string CodigoEventoSeleccionado
+        public string CodigoEventoSeleccionado
         {
             get => _codigoEventoSeleccionado;
             set
@@ -166,10 +187,34 @@ namespace EventosCadenaMercantiles.ViewModels
             Eventos = new ObservableCollection<EventosModel>();
             CargarEventosCommand = new RelayCommand<object>(param => LoadEventos());
 
-            LoadCompanyLogo(); // Carga el logo al inicializar el ViewModel
-            // Llamar directamente a LoadEventos aquí
+            LoadCompanyLogo();
+
+            // ✅ Carga inicial de eventos SIN filtrar
             LoadEventos();
 
+            ListaEventos = new ObservableCollection<string>
+    {
+        "Filtrar Eventos",
+        "ACUSE_DOCUMENTO",
+        "RECIBO_SERVICIO",
+        "ACEPTACION_EXPRESA",
+        "RECLAMO"
+    };
+
+            ListaCodigos = new ObservableCollection<string>
+    {
+        "Filtrar Código",
+        "EXITOSO",
+        "ERROR",
+        "ERRORDIAN"
+    };
+
+            // ✅ Asignar valor por defecto (sin disparar el evento)
+            TipoEventoSeleccionado = "Filtrar Eventos";
+            CodigoEventoSeleccionado = "Filtrar Código";
+
+            // ✅ Habilitar filtros después de la carga inicial
+            _ignorarFiltrosIniciales = false;
         }
 
 
@@ -211,7 +256,30 @@ namespace EventosCadenaMercantiles.ViewModels
             }
         }
 
+        private void FiltrarEventos()
+        {
+            //  Si se están ignorando los filtros iniciales, salimos
+            if (_ignorarFiltrosIniciales)
+                return;
 
+            var eventosFiltrados = EventosService.ObtenerEventos(DateTime.MinValue, DateTime.MaxValue);
+
+            if (!string.IsNullOrEmpty(TipoEventoSeleccionado) && TipoEventoSeleccionado != "Filtrar Eventos")
+            {
+                eventosFiltrados = eventosFiltrados
+                    .Where(e => e.EvenEvento == TipoEventoSeleccionado)
+                    .ToList();
+            }
+
+            if (!string.IsNullOrEmpty(CodigoEventoSeleccionado) && CodigoEventoSeleccionado != "Filtrar Código")
+            {
+                eventosFiltrados = eventosFiltrados
+                    .Where(e => e.EvenCodigo == CodigoEventoSeleccionado)
+                    .ToList();
+            }
+
+            Eventos = new ObservableCollection<EventosModel>(eventosFiltrados);
+        }
 
         private void AbrirQR(EventosModel evento)
         {
@@ -591,22 +659,7 @@ namespace EventosCadenaMercantiles.ViewModels
 
 
 
-        private void FiltrarEventos()
-        {
-            var eventosFiltrados = EventosService.ObtenerEventos(DateTime.MinValue, DateTime.MaxValue);
-
-            if (!string.IsNullOrEmpty(TipoEventoSeleccionado))
-            {
-                eventosFiltrados = eventosFiltrados.Where(e => e.EvenEvento == TipoEventoSeleccionado).ToList();
-            }
-
-            if (!string.IsNullOrEmpty(CodigoEventoSeleccionado))
-            {
-                eventosFiltrados = eventosFiltrados.Where(e => e.EvenCodigo == CodigoEventoSeleccionado).ToList();
-            }
-
-            Eventos = new ObservableCollection<EventosModel>(eventosFiltrados);
-        }
+       
 
         private void Filtroevento_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

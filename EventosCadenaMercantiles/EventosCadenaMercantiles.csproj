@@ -155,7 +155,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Controlador\HomeController.cs" />
     <Compile Include="Data\CadenaConexion.cs" />
     <Compile Include="Data\Conexion.cs" />
     <Compile Include="Modelos\DocumentoAdjunto.cs" />
