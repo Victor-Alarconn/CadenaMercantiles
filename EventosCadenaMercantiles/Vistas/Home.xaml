@@ -307,6 +307,7 @@
            Grid.Row="1"
            Margin="5"
            Background="Transparent">
+
                 <DataGrid.Columns>
                     <!-- Mostrar QRCode -->
                     <DataGridTemplateColumn Header="#QRcode" Width="80">
@@ -369,9 +370,25 @@
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
                                 <Setter Property="TextAlignment" Value="Center"/>
+                                <!-- Triggers para cambiar el color de fondo según el valor del evento -->
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding EvenEvento}" Value="ACUSE_DOCUMENTO">
+                                        <Setter Property="Background" Value="Blue"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding EvenEvento}" Value="RECIBO_SERVICIO">
+                                        <Setter Property="Background" Value="Green"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding EvenEvento}" Value="ACEPTACION_EXPRESA">
+                                        <Setter Property="Background" Value="Yellow"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding EvenEvento}" Value="RECLAMO">
+                                        <Setter Property="Background" Value="Red"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
+
 
                     <!-- Código -->
                     <DataGridTextColumn Header="Código" Binding="{Binding EvenCodigo}" Width="100">
