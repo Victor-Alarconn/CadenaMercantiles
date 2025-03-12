@@ -137,19 +137,22 @@
                     <!-- Label Evento -->
                     <Label Content="Evento:" Foreground="White" FontWeight="Bold" 
                 VerticalAlignment="Center" Margin="0,0,5,0" Grid.Row="0" Grid.Column="0"/>
-                    <ComboBox x:Name="Cbevento" Width="160" Height="25" HorizontalAlignment="Stretch" 
-                   Grid.Row="0" Grid.Column="1">
-                        <ComboBoxItem IsSelected="True">ACUSE_DOCUMENTO</ComboBoxItem>
-                        <ComboBoxItem>RECIBO_SERVICIO</ComboBoxItem>
-                        <ComboBoxItem>ACEPTACION_EXPRESA</ComboBoxItem>
-                        <ComboBoxItem>RECLAMO</ComboBoxItem>
+                    <ComboBox x:Name="Cbevento" Height="25" 
+                   Grid.Row="0" Grid.Column="1" Margin="0,0,-78,1"
+                              SelectedItem="{Binding TipoEvento, Mode=TwoWay}">
+                        <ComboBoxItem IsSelected="True">Selecione un Evento</ComboBoxItem>
+                        <ComboBoxItem Background="LightBlue" Foreground="Black" >030_ACUSE_RECIBO</ComboBoxItem>
+                        <ComboBoxItem Background="LightGreen" Foreground="Black">032_RECIBO_SERVICIO</ComboBoxItem>
+                        <ComboBoxItem Background="Yellow" Foreground="Black">033_ACEPTACION_EXPRESA</ComboBoxItem>
+                        <ComboBoxItem Background="Red" Foreground="Black">031_RECLAMO</ComboBoxItem>
                     </ComboBox>
 
                     <!-- Label CoRechazo -->
                     <Label Content="CoRechazo:" Foreground="White" FontWeight="Bold" 
                 VerticalAlignment="Center" Margin="0,5,5,0" Grid.Row="1" Grid.Column="0"/>
-                    <ComboBox x:Name="Cbcodigorechazo" Width="160" Height="25" HorizontalAlignment="Stretch" 
-                   Grid.Row="1" Grid.Column="1" Margin="0,5,0,0">
+                    <ComboBox x:Name="Cbcodigorechazo" Height="25" 
+                   Grid.Row="1" Grid.Column="1" Margin="0,5,-78,1"
+                              SelectedItem="{Binding CodigoEventoSeleccionado, Mode=TwoWay}">
                         <ComboBoxItem IsSelected="True">DOCUMENTO_CON_INCONSISTENCIAS</ComboBoxItem>
                         <ComboBoxItem>MERCANCIA_NO_ENTREGADA_TOTALMENTE</ComboBoxItem>
                         <ComboBoxItem>MERCANCIA_NO_ENTREGADA_PARCIALMENTE</ComboBoxItem>
