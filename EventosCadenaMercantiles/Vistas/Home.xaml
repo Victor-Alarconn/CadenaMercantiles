@@ -259,20 +259,21 @@
                     </Button>
 
                     <!-- Fecha 'Del' -->
-                    <Label Content="Del:" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0" Grid.Column="3"/>
                     <DatePicker x:Name="datede"
-                     VerticalAlignment="Center"
-                     Height="30"
-                     Margin="5,0"
-                     Grid.Column="4"/>
+            SelectedDate="{Binding FechaInicio, Mode=TwoWay}"
+            VerticalAlignment="Center"
+            Height="30"
+            Margin="5,0"
+            Grid.Column="4"/>
 
                     <!-- Fecha 'Hasta' -->
-                    <Label Content="Hasta:" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0" Grid.Column="5"/>
                     <DatePicker x:Name="datehasta"
-                     VerticalAlignment="Center"
-                     Height="30"
-                     Margin="5,0"
-                     Grid.Column="6"/>
+            SelectedDate="{Binding FechaFin, Mode=TwoWay}"
+            VerticalAlignment="Center"
+            Height="30"
+            Margin="5,0"
+            Grid.Column="6"/>
+
 
                     <!-- Filtro de Eventos -->
                     <ComboBox x:Name="filtroevento"

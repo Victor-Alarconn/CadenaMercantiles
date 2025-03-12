@@ -33,6 +33,8 @@ namespace EventosCadenaMercantiles.ViewModels
         private string _tipoEventoSeleccionado;
         private string _codigoEventoSeleccionado;
         private bool _ignorarFiltrosIniciales = true; // Bandera para ignorar los filtros iniciales
+        private DateTime _fechaInicio;
+        private DateTime _fechaFin;
         private static readonly string archivoConexion = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "empresa.txt");
 
         private ObservableCollection<EventosModel> _eventos;
@@ -209,6 +211,7 @@ namespace EventosCadenaMercantiles.ViewModels
 
         public HomeViewModel()
         {
+            // Inicializar comandos y propiedades antes de cargar eventos
             AbrirArchivoCommand = new RelayCommand(param => AbrirArchivo());
             RefrescarVistaCommand = new RelayCommand(param => RefrescarVista());
             CerrarVentanaCommand = new RelayCommand(param => CerrarVentana());
@@ -220,12 +223,18 @@ namespace EventosCadenaMercantiles.ViewModels
             CerrarPopupsCommand = new RelayCommand(param => CerrarPopups());
             Even_documCommand = new RelayCommand<EventosModel>(AbrirQR);
 
+            // Inicializar la colección de Eventos ANTES de cargar eventos
             Eventos = new ObservableCollection<EventosModel>();
-            CargarEventosCommand = new RelayCommand<object>(param => LoadEventos());
 
+            // Configurar fechas por defecto antes de cargar eventos
+            FechaInicio = DateTime.Now.AddDays(-7);
+            FechaFin = DateTime.Now;
+
+            // Cargar datos iniciales
             LoadCompanyLogo();
             CargarDatosEmpresa();
-            //  Carga inicial de eventos SIN filtrar
+
+            // Cargar eventos inicialmente
             LoadEventos();
 
             ListaEventos = new ObservableCollection<string>
@@ -245,21 +254,17 @@ namespace EventosCadenaMercantiles.ViewModels
         "ERRORDIAN"
     };
 
-            // ✅ Asignar valor por defecto (sin disparar el evento)
+            // Asignar valor por defecto (sin disparar el evento)
             TipoEventoSeleccionado = "Filtrar Eventos";
             CodigoEventoSeleccionado = "Filtrar Código";
 
-            // ✅ Habilitar filtros después de la carga inicial
+            // Habilitar filtros después de la carga inicial
             _ignorarFiltrosIniciales = false;
         }
 
-
         private void LoadEventos()
         {
-            DateTime fechaInicio = DateTime.Now.AddDays(-7);
-            DateTime fechaFin = DateTime.Now;
-
-            var eventosLista = EventosService.ObtenerEventos(fechaInicio, fechaFin);
+            var eventosLista = EventosService.ObtenerEventos(FechaInicio, FechaFin);
 
             Eventos.Clear();
 
@@ -289,6 +294,35 @@ namespace EventosCadenaMercantiles.ViewModels
                 }
 
                 Eventos.Add(evento);
+            }
+        }
+
+
+        public DateTime FechaInicio
+        {
+            get => _fechaInicio;
+            set
+            {
+                if (_fechaInicio != value)
+                {
+                    _fechaInicio = value;
+                    OnPropertyChanged(nameof(FechaInicio));
+                    LoadEventos();  // Carga los eventos cada vez que la fecha cambia
+                }
+            }
+        }
+
+        public DateTime FechaFin
+        {
+            get => _fechaFin;
+            set
+            {
+                if (_fechaFin != value)
+                {
+                    _fechaFin = value;
+                    OnPropertyChanged(nameof(FechaFin));
+                    LoadEventos();  // Carga los eventos cada vez que la fecha cambia
+                }
             }
         }
 
