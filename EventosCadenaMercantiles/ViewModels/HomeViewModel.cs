@@ -19,6 +19,9 @@ using System.Xml;
 using System.Web.UI.WebControls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Net.Http;
+using Newtonsoft.Json;
+using Formatting = Newtonsoft.Json.Formatting;
 
 namespace EventosCadenaMercantiles.ViewModels
 {
@@ -118,7 +121,18 @@ namespace EventosCadenaMercantiles.ViewModels
             }
         }
 
-        public string TipoEventoSeleccionado
+        private string _tipoEvento; // el tipo de evento seleccionado
+        public string TipoEvento
+        {
+            get => _tipoEvento;
+            set
+            {
+                _tipoEvento = value;
+                OnPropertyChanged(nameof(TipoEvento));
+            }
+        }
+
+        public string TipoEventoSeleccionado // filtro de eventos
         {
             get => _tipoEventoSeleccionado;
             set
@@ -200,6 +214,28 @@ namespace EventosCadenaMercantiles.ViewModels
         public ICommand Even_documCommand { get; }
         public ICommand BuscarCommand { get; private set; }
 
+        public class RelayCommandBase : ICommand
+        {
+            private readonly Action _execute;
+            private readonly Func<bool> _canExecute;
+
+            public RelayCommandBase(Action execute, Func<bool> canExecute = null)
+            {
+                _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+                _canExecute = canExecute;
+            }
+
+            public bool CanExecute(object parameter) => _canExecute == null || _canExecute();
+
+            public void Execute(object parameter) => _execute();
+
+            public event EventHandler CanExecuteChanged
+            {
+                add => CommandManager.RequerySuggested += value;
+                remove => CommandManager.RequerySuggested -= value;
+            }
+        }
+
         public class RelayCommand<T> : ICommand
         {
             private readonly Action<T> _execute;
@@ -224,8 +260,10 @@ namespace EventosCadenaMercantiles.ViewModels
 
 
 
+
         public HomeViewModel()
         {
+
             // Inicializar comandos y propiedades antes de cargar eventos
             AbrirArchivoCommand = new RelayCommand(param => AbrirArchivo());
             RefrescarVistaCommand = new RelayCommand(param => RefrescarVista());
@@ -233,11 +271,19 @@ namespace EventosCadenaMercantiles.ViewModels
             EnviarXmlCommand = new RelayCommand(param => EnviarXml());
             TogglePopupEventoCommand = new RelayCommand(param => PopupEventoAbierto = !PopupEventoAbierto);
             TogglePopupCoRechazoCommand = new RelayCommand(param => PopupCoRechazoAbierto = !PopupCoRechazoAbierto);
+            AbrirArchivoCommand = new RelayCommandBase(AbrirArchivo);
+            RefrescarVistaCommand = new RelayCommandBase(RefrescarVista);
+            CerrarVentanaCommand = new RelayCommandBase(CerrarVentana);
+            EnviarXmlCommand = new RelayCommandBase(EnviarXml, PuedeEnviarEvento);
+            TogglePopupEventoCommand = new RelayCommandBase(() => PopupEventoAbierto = !PopupEventoAbierto);
+            TogglePopupCoRechazoCommand = new RelayCommandBase(() => PopupCoRechazoAbierto = !PopupCoRechazoAbierto);
+            CerrarPopupsCommand = new RelayCommandBase(CerrarPopups);
+            //  Para comandos con parámetros, usa RelayCommand<T>
             SeleccionarEventoCommand = new RelayCommand<string>(param => SeleccionarEvento(param));
             SeleccionarCoRechazoCommand = new RelayCommand<string>(param => SeleccionarCoRechazo(param));
-            CerrarPopupsCommand = new RelayCommand(param => CerrarPopups());
             Even_documCommand = new RelayCommand<EventosModel>(AbrirQR);
             BuscarCommand = new RelayCommand(ExecuteBuscar);
+            CargarEventosCommand = new RelayCommand<object>(param => LoadEventos());
 
             // Inicializar la colección de Eventos ANTES de cargar eventos
             Eventos = new ObservableCollection<EventosModel>();
@@ -249,8 +295,8 @@ namespace EventosCadenaMercantiles.ViewModels
             // Cargar datos iniciales
             LoadCompanyLogo();
             CargarDatosEmpresa();
-
             // Cargar eventos inicialmente
+
             LoadEventos();
 
             ListaEventos = new ObservableCollection<string>
@@ -270,6 +316,7 @@ namespace EventosCadenaMercantiles.ViewModels
         "ERRORDIAN"
     };
 
+
             // Asignar valor por defecto (sin disparar el evento)
             TipoEventoSeleccionado = "Filtrar Eventos";
             CodigoEventoSeleccionado = "Filtrar Código";
@@ -277,6 +324,7 @@ namespace EventosCadenaMercantiles.ViewModels
             // Habilitar filtros después de la carga inicial
             _ignorarFiltrosIniciales = false;
         }
+
 
         private void LoadEventos()
         {
@@ -713,10 +761,80 @@ namespace EventosCadenaMercantiles.ViewModels
             Application.Current.MainWindow.Close();
         }
 
-        private void EnviarXml()
+        private async void EnviarXml()
         {
-            MessageBox.Show("Enviando el documento XML...");
+            if (EventoSeleccionado == null)
+            {
+                MessageBox.Show("Seleccione un documento antes de enviar el evento.");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(TipoEvento) || TipoEvento == "Selecione un Evento")
+            {
+                MessageBox.Show("Seleccione un evento antes de continuar.");
+                return;
+            }
+
+            // Si el evento es reclamo, debe seleccionar un código de rechazo
+            if (TipoEventoSeleccionado == "RECLAMO" &&
+                (string.IsNullOrEmpty(CodigoEventoSeleccionado) || CodigoEventoSeleccionado == "Filtrar Código"))
+            {
+                MessageBox.Show("Debe seleccionar un código de rechazo para el evento RECLAMO.");
+                return;
+            }
+
+            var datosEvento = new
+            {
+                Documento = EventoSeleccionado.EvenDocum,
+                Emisor = EventoSeleccionado.EvenReceptor,
+                Identificador = EventoSeleccionado.EvenIdentif,
+                Fecha = EventoSeleccionado.EvenFecha,
+                Evento = TipoEvento,
+                CodigoRechazo = TipoEventoSeleccionado == "RECLAMO" ? CodigoEventoSeleccionado : null
+            };
+
+            string jsonData = JsonConvert.SerializeObject(datosEvento, Formatting.Indented);
+
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                    var response = await client.PostAsync("https://tuservidor.com/api/eventos", content);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string resultado = await response.Content.ReadAsStringAsync();
+                        MessageBox.Show($"Evento enviado con éxito: {resultado}");
+                    }
+                    else
+                    {
+                        string error = await response.Content.ReadAsStringAsync();
+                        MessageBox.Show($"Error al enviar evento: {error}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error de red: {ex.Message}");
+            }
         }
+
+        private bool PuedeEnviarEvento()
+        {
+            if (EventoSeleccionado == null) return false;
+
+            if (string.IsNullOrEmpty(TipoEvento) || TipoEvento == "Filtrar Eventos")
+                return false;
+
+            if (TipoEvento == "RECLAMO" &&
+                (string.IsNullOrEmpty(CodigoEventoSeleccionado) || CodigoEventoSeleccionado == "Filtrar Código"))
+                return false;
+
+            return true;
+        }
+
+
 
         private void SeleccionarEvento(string evento)
         {
