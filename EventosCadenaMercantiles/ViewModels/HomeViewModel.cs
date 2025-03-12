@@ -35,6 +35,7 @@ namespace EventosCadenaMercantiles.ViewModels
         private bool _ignorarFiltrosIniciales = true; // Bandera para ignorar los filtros iniciales
         private DateTime _fechaInicio;
         private DateTime _fechaFin;
+        private string _textoBusqueda;
         private static readonly string archivoConexion = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "empresa.txt");
 
         private ObservableCollection<EventosModel> _eventos;
@@ -168,6 +169,19 @@ namespace EventosCadenaMercantiles.ViewModels
             }
         }
 
+        public string TextoBusqueda
+        {
+            get => _textoBusqueda;
+            set
+            {
+                if (_textoBusqueda != value)
+                {
+                    _textoBusqueda = value;
+                    OnPropertyChanged(nameof(TextoBusqueda));
+                }
+            }
+        }
+
 
         // Propiedad para mostrar en el Label
         public string NombreDocumento => EventoSeleccionado?.EvenDocum;
@@ -184,6 +198,7 @@ namespace EventosCadenaMercantiles.ViewModels
         public ICommand CerrarPopupsCommand { get; }
         public ICommand CargarEventosCommand { get; }
         public ICommand Even_documCommand { get; }
+        public ICommand BuscarCommand { get; private set; }
 
         public class RelayCommand<T> : ICommand
         {
@@ -222,6 +237,7 @@ namespace EventosCadenaMercantiles.ViewModels
             SeleccionarCoRechazoCommand = new RelayCommand<string>(param => SeleccionarCoRechazo(param));
             CerrarPopupsCommand = new RelayCommand(param => CerrarPopups());
             Even_documCommand = new RelayCommand<EventosModel>(AbrirQR);
+            BuscarCommand = new RelayCommand(ExecuteBuscar);
 
             // Inicializar la colección de Eventos ANTES de cargar eventos
             Eventos = new ObservableCollection<EventosModel>();
@@ -296,6 +312,24 @@ namespace EventosCadenaMercantiles.ViewModels
                 Eventos.Add(evento);
             }
         }
+
+        private void ExecuteBuscar(object parameter)
+        {
+            if (!string.IsNullOrEmpty(TextoBusqueda))
+            {
+                string textoBusquedaLower = TextoBusqueda.ToLower(); // Convertir el texto de búsqueda a minúsculas
+                var resultados = Eventos.Where(e => e.EvenDocum.ToLower().Contains(textoBusquedaLower)
+                                                || e.EvenIdentif.ToLower().Contains(textoBusquedaLower)
+                                                || e.EvenReceptor.ToLower().Contains(textoBusquedaLower)).ToList();
+                Eventos = new ObservableCollection<EventosModel>(resultados);
+            }
+            else
+            {
+                // Opcional: Recargar todos los eventos o manejar la ausencia de búsqueda
+                LoadEventos();
+            }
+        }
+
 
 
         public DateTime FechaInicio

@@ -240,13 +240,19 @@
 
                     <!-- Caja de Texto para buscar -->
                     <TextBox x:Name="TxtBusqueda"
-                  ToolTip="Para buscar presione ENTER"
-                  VerticalAlignment="Center"
-                  Height="30"
-                  Width="250"
-                  MaxWidth="400" 
-                  Margin="5,0,81,0"
-                  Grid.Column="1"/>
+                    ToolTip="Para buscar presione ENTER"
+                    VerticalAlignment="Center"
+                    Height="30"
+                    Width="277"
+                    MaxWidth="400" 
+                    Margin="5,0,120,0"
+                    Grid.Column="1"
+                    Foreground="Gray"
+                    Text="{Binding TextoBusqueda, Mode=TwoWay}"
+                    GotFocus="TextBox_GotFocus"
+                    LostFocus="TextBox_LostFocus"
+                    Loaded="TextBox_Loaded"/>
+
 
                     <!-- Botón de lupa -->
                     <Button Height="30"
@@ -254,7 +260,8 @@
                  Background="Transparent"
                  BorderBrush="White"
                  Grid.Column="1"
-                 Margin="248,0,22,0">
+                 Command="{Binding BuscarCommand}"
+                 Margin="260,0,22,0">
                         <Image Source="/Imagenes/search.png" Stretch="Uniform"/>
                     </Button>
 
