@@ -36,6 +36,9 @@ namespace EventosCadenaMercantiles.ViewModels
         private string _tipoEventoSeleccionado;
         private string _codigoEventoSeleccionado;
         private bool _ignorarFiltrosIniciales = true; // Bandera para ignorar los filtros iniciales
+        private DateTime _fechaInicio;
+        private DateTime _fechaFin;
+        private string _textoBusqueda;
         private static readonly string archivoConexion = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "empresa.txt");
 
         private ObservableCollection<EventosModel> _eventos;
@@ -180,6 +183,19 @@ namespace EventosCadenaMercantiles.ViewModels
             }
         }
 
+        public string TextoBusqueda
+        {
+            get => _textoBusqueda;
+            set
+            {
+                if (_textoBusqueda != value)
+                {
+                    _textoBusqueda = value;
+                    OnPropertyChanged(nameof(TextoBusqueda));
+                }
+            }
+        }
+
 
         // Propiedad para mostrar en el Label
         public string NombreDocumento => EventoSeleccionado?.EvenDocum;
@@ -196,6 +212,7 @@ namespace EventosCadenaMercantiles.ViewModels
         public ICommand CerrarPopupsCommand { get; }
         public ICommand CargarEventosCommand { get; }
         public ICommand Even_documCommand { get; }
+        public ICommand BuscarCommand { get; private set; }
 
         public class RelayCommandBase : ICommand
         {
@@ -246,6 +263,14 @@ namespace EventosCadenaMercantiles.ViewModels
 
         public HomeViewModel()
         {
+
+            // Inicializar comandos y propiedades antes de cargar eventos
+            AbrirArchivoCommand = new RelayCommand(param => AbrirArchivo());
+            RefrescarVistaCommand = new RelayCommand(param => RefrescarVista());
+            CerrarVentanaCommand = new RelayCommand(param => CerrarVentana());
+            EnviarXmlCommand = new RelayCommand(param => EnviarXml());
+            TogglePopupEventoCommand = new RelayCommand(param => PopupEventoAbierto = !PopupEventoAbierto);
+            TogglePopupCoRechazoCommand = new RelayCommand(param => PopupCoRechazoAbierto = !PopupCoRechazoAbierto);
             AbrirArchivoCommand = new RelayCommandBase(AbrirArchivo);
             RefrescarVistaCommand = new RelayCommandBase(RefrescarVista);
             CerrarVentanaCommand = new RelayCommandBase(CerrarVentana);
@@ -253,17 +278,25 @@ namespace EventosCadenaMercantiles.ViewModels
             TogglePopupEventoCommand = new RelayCommandBase(() => PopupEventoAbierto = !PopupEventoAbierto);
             TogglePopupCoRechazoCommand = new RelayCommandBase(() => PopupCoRechazoAbierto = !PopupCoRechazoAbierto);
             CerrarPopupsCommand = new RelayCommandBase(CerrarPopups);
-
             //  Para comandos con parámetros, usa RelayCommand<T>
             SeleccionarEventoCommand = new RelayCommand<string>(param => SeleccionarEvento(param));
             SeleccionarCoRechazoCommand = new RelayCommand<string>(param => SeleccionarCoRechazo(param));
             Even_documCommand = new RelayCommand<EventosModel>(AbrirQR);
+            BuscarCommand = new RelayCommand(ExecuteBuscar);
             CargarEventosCommand = new RelayCommand<object>(param => LoadEventos());
 
+            // Inicializar la colección de Eventos ANTES de cargar eventos
             Eventos = new ObservableCollection<EventosModel>();
 
+            // Configurar fechas por defecto antes de cargar eventos
+            FechaInicio = DateTime.Now.AddDays(-7);
+            FechaFin = DateTime.Now;
+
+            // Cargar datos iniciales
             LoadCompanyLogo();
             CargarDatosEmpresa();
+            // Cargar eventos inicialmente
+
             LoadEventos();
 
             ListaEventos = new ObservableCollection<string>
@@ -283,20 +316,19 @@ namespace EventosCadenaMercantiles.ViewModels
         "ERRORDIAN"
     };
 
+
+            // Asignar valor por defecto (sin disparar el evento)
             TipoEventoSeleccionado = "Filtrar Eventos";
             CodigoEventoSeleccionado = "Filtrar Código";
 
+            // Habilitar filtros después de la carga inicial
             _ignorarFiltrosIniciales = false;
         }
 
 
-
         private void LoadEventos()
         {
-            DateTime fechaInicio = DateTime.Now.AddDays(-7);
-            DateTime fechaFin = DateTime.Now;
-
-            var eventosLista = EventosService.ObtenerEventos(fechaInicio, fechaFin);
+            var eventosLista = EventosService.ObtenerEventos(FechaInicio, FechaFin);
 
             Eventos.Clear();
 
@@ -326,6 +358,53 @@ namespace EventosCadenaMercantiles.ViewModels
                 }
 
                 Eventos.Add(evento);
+            }
+        }
+
+        private void ExecuteBuscar(object parameter)
+        {
+            if (!string.IsNullOrEmpty(TextoBusqueda))
+            {
+                string textoBusquedaLower = TextoBusqueda.ToLower(); // Convertir el texto de búsqueda a minúsculas
+                var resultados = Eventos.Where(e => e.EvenDocum.ToLower().Contains(textoBusquedaLower)
+                                                || e.EvenIdentif.ToLower().Contains(textoBusquedaLower)
+                                                || e.EvenReceptor.ToLower().Contains(textoBusquedaLower)).ToList();
+                Eventos = new ObservableCollection<EventosModel>(resultados);
+            }
+            else
+            {
+                // Opcional: Recargar todos los eventos o manejar la ausencia de búsqueda
+                LoadEventos();
+            }
+        }
+
+
+
+        public DateTime FechaInicio
+        {
+            get => _fechaInicio;
+            set
+            {
+                if (_fechaInicio != value)
+                {
+                    _fechaInicio = value;
+                    OnPropertyChanged(nameof(FechaInicio));
+                    LoadEventos();  // Carga los eventos cada vez que la fecha cambia
+                }
+            }
+        }
+
+        public DateTime FechaFin
+        {
+            get => _fechaFin;
+            set
+            {
+                if (_fechaFin != value)
+                {
+                    _fechaFin = value;
+                    OnPropertyChanged(nameof(FechaFin));
+                    LoadEventos();  // Carga los eventos cada vez que la fecha cambia
+                }
             }
         }
 

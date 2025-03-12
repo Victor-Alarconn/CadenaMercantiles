@@ -243,13 +243,19 @@
 
                     <!-- Caja de Texto para buscar -->
                     <TextBox x:Name="TxtBusqueda"
-                  ToolTip="Para buscar presione ENTER"
-                  VerticalAlignment="Center"
-                  Height="30"
-                  Width="250"
-                  MaxWidth="400" 
-                  Margin="5,0,81,0"
-                  Grid.Column="1"/>
+                    ToolTip="Para buscar presione ENTER"
+                    VerticalAlignment="Center"
+                    Height="30"
+                    Width="277"
+                    MaxWidth="400" 
+                    Margin="5,0,120,0"
+                    Grid.Column="1"
+                    Foreground="Gray"
+                    Text="{Binding TextoBusqueda, Mode=TwoWay}"
+                    GotFocus="TextBox_GotFocus"
+                    LostFocus="TextBox_LostFocus"
+                    Loaded="TextBox_Loaded"/>
+
 
                     <!-- Botón de lupa -->
                     <Button Height="30"
@@ -257,25 +263,27 @@
                  Background="Transparent"
                  BorderBrush="White"
                  Grid.Column="1"
-                 Margin="248,0,22,0">
+                 Command="{Binding BuscarCommand}"
+                 Margin="260,0,22,0">
                         <Image Source="/Imagenes/search.png" Stretch="Uniform"/>
                     </Button>
 
                     <!-- Fecha 'Del' -->
-                    <Label Content="Del:" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0" Grid.Column="3"/>
                     <DatePicker x:Name="datede"
-                     VerticalAlignment="Center"
-                     Height="30"
-                     Margin="5,0"
-                     Grid.Column="4"/>
+            SelectedDate="{Binding FechaInicio, Mode=TwoWay}"
+            VerticalAlignment="Center"
+            Height="30"
+            Margin="5,0"
+            Grid.Column="4"/>
 
                     <!-- Fecha 'Hasta' -->
-                    <Label Content="Hasta:" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0" Grid.Column="5"/>
                     <DatePicker x:Name="datehasta"
-                     VerticalAlignment="Center"
-                     Height="30"
-                     Margin="5,0"
-                     Grid.Column="6"/>
+            SelectedDate="{Binding FechaFin, Mode=TwoWay}"
+            VerticalAlignment="Center"
+            Height="30"
+            Margin="5,0"
+            Grid.Column="6"/>
+
 
                     <!-- Filtro de Eventos -->
                     <ComboBox x:Name="filtroevento"
@@ -310,6 +318,7 @@
            Grid.Row="1"
            Margin="5"
            Background="Transparent">
+
                 <DataGrid.Columns>
                     <!-- Mostrar QRCode -->
                     <DataGridTemplateColumn Header="#QRcode" Width="80">
@@ -372,9 +381,25 @@
                             <Style TargetType="TextBlock">
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
                                 <Setter Property="TextAlignment" Value="Center"/>
+                                <!-- Triggers para cambiar el color de fondo según el valor del evento -->
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding EvenEvento}" Value="ACUSE_DOCUMENTO">
+                                        <Setter Property="Background" Value="Blue"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding EvenEvento}" Value="RECIBO_SERVICIO">
+                                        <Setter Property="Background" Value="Green"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding EvenEvento}" Value="ACEPTACION_EXPRESA">
+                                        <Setter Property="Background" Value="Yellow"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding EvenEvento}" Value="RECLAMO">
+                                        <Setter Property="Background" Value="Red"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
+
 
                     <!-- Código -->
                     <DataGridTextColumn Header="Código" Binding="{Binding EvenCodigo}" Width="100">
