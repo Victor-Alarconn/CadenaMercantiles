@@ -175,6 +175,9 @@
     <Compile Include="Vistas\ActivacionVista.xaml.cs">
       <DependentUpon>ActivacionVista.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Vistas\ClaveLocal.xaml.cs">
+      <DependentUpon>ClaveLocal.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vistas\DatosEmpresaVista.xaml.cs">
       <DependentUpon>DatosEmpresaVista.xaml</DependentUpon>
     </Compile>
@@ -195,6 +198,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Vistas\ActivacionVista.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Vistas\ClaveLocal.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
