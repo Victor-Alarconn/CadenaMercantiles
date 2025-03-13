@@ -10,6 +10,7 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using static EventosCadenaMercantiles.Services.EmpresaService;
 
 namespace EventosCadenaMercantiles
@@ -22,6 +23,11 @@ namespace EventosCadenaMercantiles
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+            this.Exit += App_Exit;
+            this.SessionEnding += App_SessionEnding;
+
+            EventManager.RegisterClassHandler(typeof(Window), Window.PreviewKeyDownEvent, new KeyEventHandler(GlobalPreviewKeyDown));
 
             var splash = new SplashScreenWindow();
             splash.Show();
@@ -51,7 +57,7 @@ namespace EventosCadenaMercantiles
 
                     if (estado == EstadoEmpresa.Activa)
                     {
-                        ventanaPrincipal = new ClaveLocal();
+                        ventanaPrincipal = new Home();
                     }
                     else if (estado == EstadoEmpresa.Suspendida)
                     {
@@ -71,6 +77,30 @@ namespace EventosCadenaMercantiles
             });
         }
 
+        private void GlobalPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F5)
+            {
+                ClaveLocal claveLocal = new ClaveLocal();
+                claveLocal.Owner = Current.MainWindow;
+                claveLocal.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                claveLocal.ShowDialog();
+            }
+        }
 
+        private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            // Manejo de excepciones no controladas
+        }
+
+        private void App_Exit(object sender, ExitEventArgs e)
+        {
+            // Limpieza al salir de la aplicación
+        }
+
+        private void App_SessionEnding(object sender, SessionEndingCancelEventArgs e)
+        {
+            // Acciones al cerrar sesión en el sistema operativo
+        }
     }
 }
