@@ -14,9 +14,7 @@ using System.Windows.Shapes;
 
 namespace EventosCadenaMercantiles.Vistas
 {
-    /// <summary>
-    /// Lógica de interacción para ClaveLocal.xaml
-    /// </summary>
+
     public partial class ClaveLocal : Window
     {
         public ClaveLocal()
@@ -32,8 +30,9 @@ namespace EventosCadenaMercantiles.Vistas
                 txtclave.Visibility = Visibility.Collapsed;
                 (sender as Button).Visibility = Visibility.Collapsed; // Oculta el botón
 
-                // Muestra el DatePicker
+                // Muestra el DatePicker y el botón Guardar
                 datePickerFecha.Visibility = Visibility.Visible;
+                btnGuardar.Visibility = Visibility.Visible; // Actualiza esta línea para referenciar al botón correcto
             }
             else
             {
@@ -41,6 +40,17 @@ namespace EventosCadenaMercantiles.Vistas
                 txtclave.Clear(); // Limpia el campo de contraseña para un nuevo intento
             }
         }
+
+
+        private void BtnGuardar_Click(object sender, RoutedEventArgs e)
+        {
+            // Acción que se ejecutará cuando se haga clic en el botón Guardar
+            MessageBox.Show("Datos guardados correctamente.", "Guardar", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            // Aquí puedes agregar más lógica para guardar datos o realizar otras operaciones necesarias
+        }
+
+
 
     }
 }

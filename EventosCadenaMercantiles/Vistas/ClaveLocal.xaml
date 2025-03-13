@@ -69,25 +69,61 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
+        <!-- Estilo para el GuardarBox -->
+        <Style x:Key="ComboBoxButtonStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="#4CAF50"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Gray" Direction="270" BlurRadius="10" ShadowDepth="5"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="5">
+                            <Grid>
+                                <ToggleButton Background="Transparent" IsHitTestVisible="False" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
 
     </Window.Resources>
 
-    <Border Margin="10" BorderBrush="Green" BorderThickness="1" CornerRadius="10">
+ <Border Margin="10" BorderBrush="Green" BorderThickness="1" CornerRadius="10">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <!-- Nueva fila para el DatePicker -->
+                <RowDefinition Height="Auto"/> <!-- Fila para el ComboBox de guardar -->
             </Grid.RowDefinitions>
 
-            <Label Grid.Row="0" Content="Ingresar Clave" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalAlignment="Center" FontSize="16"/>
+            <Label Grid.Row="0" Content="Ingresar Clave" FontWeight="Bold" HorizontalAlignment="Center" FontSize="16" Margin="10"/>
             <PasswordBox x:Name="txtclave" Grid.Row="1" Style="{StaticResource PasswordBoxStyle}" Margin="10"/>
             <Button Content="Aceptar" Grid.Row="2" Click="Btnclave_Click" Style="{StaticResource ButtonStyle}" Margin="10"/>
-
-            <!-- DatePicker que se muestra solo después de validar la clave -->
             <DatePicker x:Name="datePickerFecha" Grid.Row="3" Visibility="Collapsed" HorizontalAlignment="Center" Margin="10"/>
+
+            <!-- ComboBox como botón de guardar -->
+            <!-- Botón de guardar -->
+            <Button Content="Guardar" x:Name="btnGuardar" Grid.Row="4" Visibility="Collapsed" HorizontalAlignment="Center" Style="{StaticResource ButtonStyle}" Margin="10" Click="BtnGuardar_Click"/>
+
+
         </Grid>
     </Border>
 </Window>

@@ -51,7 +51,7 @@ namespace EventosCadenaMercantiles
 
                     if (estado == EstadoEmpresa.Activa)
                     {
-                        ventanaPrincipal = new Home();
+                        ventanaPrincipal = new ClaveLocal();
                     }
                     else if (estado == EstadoEmpresa.Suspendida)
                     {
