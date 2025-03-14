@@ -22,6 +22,7 @@ using System.Windows.Media.Imaging;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Formatting = Newtonsoft.Json.Formatting;
+using EventosCadenaMercantiles.Vistas;
 
 namespace EventosCadenaMercantiles.ViewModels
 {
@@ -774,31 +775,31 @@ namespace EventosCadenaMercantiles.ViewModels
             }
 
             string jsonData = JsonConvert.SerializeObject(datosEvento, Formatting.Indented);
-            string documento = EventoSeleccionado.EvenDocum;
+            
+
+            // Mostrar ventana de progreso
+            var progressWindow = new ProgressWindow();
+            progressWindow.Show();
+
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    //  Añadir solo el encabezado personalizado
                     client.DefaultRequestHeaders.Add("efacturaAuthorizationToken", "RNimIzV6-emyM-sQ2b-mclA-S9DWbc84jKCV");
 
-                    //  Content-Type se añade en StringContent (NO en Headers directamente)
                     var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-                    //  URL de destino
                     var response = await client.PostAsync("https://apivp.efacturacadena.com/staging/recepcion/estados", content);
 
                     if (response.IsSuccessStatusCode)
                     {
-
-
                         string resultado = await response.Content.ReadAsStringAsync();
 
-                        //  Guardar en la base de datos(Actualizar evento)
-                        EventosService.ActualizarEventoEnBaseDeDatos(resultado, TipoEvento, documento);
+                        // Guardar en la base de datos (Actualizar evento)
+                        EventosService.ActualizarEventoEnBaseDeDatos(resultado, TipoEvento, EventoSeleccionado);
 
-                        //  Enviar correo al emisor
-                        EnvioCorreoService.EnviarCorreoAlEmisor(resultado, TipoEvento, documento);
+                        // Enviar correo al emisor
+                        EnvioCorreoService.EnviarCorreoAlEmisor(resultado, TipoEvento, EventoSeleccionado);
+
                         MessageBox.Show($"Evento {TipoEvento} enviado con éxito: {resultado}");
                     }
                     else
@@ -812,7 +813,13 @@ namespace EventosCadenaMercantiles.ViewModels
             {
                 MessageBox.Show($"Error de red: {ex.Message}");
             }
+            finally
+            {
+                // Cerrar ventana de progreso
+                progressWindow.Close();
+            }
         }
+
 
 
 

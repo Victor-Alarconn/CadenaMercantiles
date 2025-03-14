@@ -170,7 +170,7 @@ namespace EventosCadenaMercantiles.Services
         }
 
 
-        public static void ActualizarEventoEnBaseDeDatos(string respuesta, string TipoEvento, string documento)
+        public static void ActualizarEventoEnBaseDeDatos(string respuesta, string TipoEvento, EventosModel evento)
         {
             var connection = Conexion.ObtenerConexion();
             connection.Open();
@@ -181,7 +181,7 @@ namespace EventosCadenaMercantiles.Services
             command.Parameters.AddWithValue("?", TipoEvento); 
             command.Parameters.AddWithValue("?", "Exitoso"); 
             command.Parameters.AddWithValue("?", respuesta); 
-            command.Parameters.AddWithValue("?", documento); 
+            command.Parameters.AddWithValue("?", evento.EvenEvento); 
 
             command.ExecuteNonQuery();
             connection.Close();
