@@ -262,7 +262,7 @@
     <Resource Include="Recursos\search.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Imagenes\LogoEmp.png" />
+    <Resource Include="Imagenes\DefaultLogo.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Imagenes\chart.png" />
@@ -291,7 +291,7 @@
     <Resource Include="Imagenes\refrescar.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Imagenes\DefaultLogo.png" />
+    <Resource Include="Imagenes\LogoEmp.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Imagenes\icono2.ico" />
