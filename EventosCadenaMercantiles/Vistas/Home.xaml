@@ -136,16 +136,22 @@
 
                     <!-- Label Evento -->
                     <Label Content="Evento:" Foreground="White" FontWeight="Bold" 
-                VerticalAlignment="Center" Margin="0,0,5,0" Grid.Row="0" Grid.Column="0"/>
-                    <ComboBox x:Name="Cbevento" Height="25" 
-                   Grid.Row="0" Grid.Column="1" Margin="0,0,-78,1"
-                              SelectedItem="{Binding TipoEvento, Mode=TwoWay}">
-                        <ComboBoxItem IsSelected="True">Selecione un Evento</ComboBoxItem>
-                        <ComboBoxItem Background="LightBlue" Foreground="Black" >030_ACUSE_RECIBO</ComboBoxItem>
+                           VerticalAlignment="Center" Margin="0,0,5,0" Grid.Row="0" Grid.Column="0"/>
+
+                    <ComboBox x:Name="Cbevento"
+                                      Height="25"
+                                      Grid.Row="0"
+                                      Grid.Column="1"
+                                      Margin="0,0,-78,1"
+                                      SelectedValue="{Binding TipoEvento, Mode=TwoWay}"
+                                      SelectedValuePath="Content">
+                        <ComboBoxItem IsSelected="True">Seleccione un Evento</ComboBoxItem>
+                        <ComboBoxItem Background="LightBlue" Foreground="Black">030_ACUSE_RECIBO</ComboBoxItem>
                         <ComboBoxItem Background="LightGreen" Foreground="Black">032_RECIBO_SERVICIO</ComboBoxItem>
                         <ComboBoxItem Background="Yellow" Foreground="Black">033_ACEPTACION_EXPRESA</ComboBoxItem>
                         <ComboBoxItem Background="Red" Foreground="Black">031_RECLAMO</ComboBoxItem>
                     </ComboBox>
+
 
                     <!-- Label CoRechazo -->
                     <Label Content="CoRechazo:" Foreground="White" FontWeight="Bold" 
@@ -213,14 +219,13 @@
                 <RowDefinition Height="*"/>
                 <!-- Para lista de eventos -->
             </Grid.RowDefinitions>
-
             <!-- === PARTE DE BÚSQUEDA Y FILTROS === -->
             <Border BorderBrush="White" BorderThickness="1" CornerRadius="5" Padding="10" Grid.Row="0" Margin="5">
-                <Grid>
+                <Grid HorizontalAlignment="Center">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <!-- Label Buscar -->
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                         <!-- TextBox búsqueda -->
                         <ColumnDefinition Width="Auto"/>
                         <!-- Botón buscar (lupa) -->
@@ -238,76 +243,77 @@
                         <!-- Filtro Código -->
                     </Grid.ColumnDefinitions>
 
-                    <!-- Buscar Label -->
-                    <Label Content="Buscar:" Foreground="White" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0" Grid.Column="0"/>
+                    <!-- Label Buscar -->
+                    <Label Content="Buscar:" Foreground="black" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0" Grid.Column="0"/>
 
                     <!-- Caja de Texto para buscar -->
                     <TextBox x:Name="TxtBusqueda"
-                    ToolTip="Para buscar presione ENTER"
-                    VerticalAlignment="Center"
-                    Height="30"
-                    Width="277"
-                    MaxWidth="400" 
-                    Margin="5,0,120,0"
-                    Grid.Column="1"
-                    Foreground="Gray"
-                    Text="{Binding TextoBusqueda, Mode=TwoWay}"
-                    GotFocus="TextBox_GotFocus"
-                    LostFocus="TextBox_LostFocus"
-                    Loaded="TextBox_Loaded"/>
-
+                 ToolTip="Para buscar presione ENTER"
+                 VerticalAlignment="Center"
+                 Height="30"
+                 Width="277"
+                 MaxWidth="350"
+                 Margin="5,0"
+                 Grid.Column="1"
+                 Foreground="Gray"
+                 Text="{Binding TextoBusqueda, Mode=TwoWay}"
+                 GotFocus="TextBox_GotFocus"
+                 LostFocus="TextBox_LostFocus"
+                 Loaded="TextBox_Loaded"/>
 
                     <!-- Botón de lupa -->
                     <Button Height="30"
-                 Width="30"
-                 Background="Transparent"
-                 BorderBrush="White"
-                 Grid.Column="1"
-                 Command="{Binding BuscarCommand}"
-                 Margin="260,0,22,0">
+                Width="30"
+                Background="Transparent"
+                BorderBrush="White"
+                Grid.Column="2"
+                Command="{Binding BuscarCommand}"
+                Margin="5,0">
                         <Image Source="/Imagenes/search.png" Stretch="Uniform"/>
                     </Button>
 
+                    <!-- Label 'DEL' -->
+                    <Label Content="DEL" Foreground="black" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0" Grid.Column="3"/>
+
                     <!-- Fecha 'Del' -->
                     <DatePicker x:Name="datede"
-            SelectedDate="{Binding FechaInicio, Mode=TwoWay}"
-            VerticalAlignment="Center"
-            Height="30"
-            Margin="5,0"
-            Grid.Column="4"/>
+                    SelectedDate="{Binding FechaInicio, Mode=TwoWay}"
+                    VerticalAlignment="Center"
+                    Height="30"
+                    Margin="5,0"
+                    Grid.Column="4"/>
+
+                    <!-- Label 'HASTA' -->
+                    <Label Content="HASTA" Foreground="black" FontWeight="Bold" VerticalAlignment="Center" Margin="5,0" Grid.Column="5"/>
 
                     <!-- Fecha 'Hasta' -->
                     <DatePicker x:Name="datehasta"
-            SelectedDate="{Binding FechaFin, Mode=TwoWay}"
-            VerticalAlignment="Center"
-            Height="30"
-            Margin="5,0"
-            Grid.Column="6"/>
-
+                    SelectedDate="{Binding FechaFin, Mode=TwoWay}"
+                    VerticalAlignment="Center"
+                    Height="30"
+                    Margin="5,0"
+                    Grid.Column="6"/>
 
                     <!-- Filtro de Eventos -->
                     <ComboBox x:Name="filtroevento"
-          Width="140"
-          ItemsSource="{Binding ListaEventos}"
-          SelectedItem="{Binding TipoEventoSeleccionado, Mode=TwoWay}"
-          VerticalAlignment="Center"
-          Margin="5,0"
-          Grid.Column="7">
-                    </ComboBox>
+                  Width="140"
+                  ItemsSource="{Binding ListaEventos}"
+                  SelectedItem="{Binding TipoEventoSeleccionado, Mode=TwoWay}"
+                  VerticalAlignment="Center"
+                  Margin="5,0"
+                  Grid.Column="7"/>
 
                     <!-- Filtro de Código -->
                     <ComboBox x:Name="filtrocodigo"
-          Width="140"
-          ItemsSource="{Binding ListaCodigos}"
-          SelectedItem="{Binding CodigoEventoSeleccionado, Mode=TwoWay}"
-          VerticalAlignment="Center"
-          Margin="5,0"
-          Grid.Column="8">
-                    </ComboBox>
-
-
+                  Width="140"
+                  ItemsSource="{Binding ListaCodigos}"
+                  SelectedItem="{Binding CodigoEventoSeleccionado, Mode=TwoWay}"
+                  VerticalAlignment="Center"
+                  Margin="5,0"
+                  Grid.Column="8"/>
                 </Grid>
             </Border>
+
 
             <!-- === PARTE DE LISTADO DE EVENTOS === -->
             <DataGrid x:Name="EventosDataGrid"
@@ -316,7 +322,7 @@
            SelectedItem="{Binding EventoSeleccionado, Mode=TwoWay}"
            CanUserAddRows="False"
            Grid.Row="1"
-           Margin="5"
+           Margin="5,5,5,-37"
            Background="Transparent">
 
                 <DataGrid.Columns>

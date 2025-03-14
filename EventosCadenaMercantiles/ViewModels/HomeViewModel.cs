@@ -378,8 +378,6 @@ namespace EventosCadenaMercantiles.ViewModels
             }
         }
 
-
-
         public DateTime FechaInicio
         {
             get => _fechaInicio;
@@ -635,14 +633,14 @@ namespace EventosCadenaMercantiles.ViewModels
 
 
 
-        private void ValidarReceiverParty(XmlNode node, DocumentoAdjunto doc, XmlNamespaceManager ns)
+        private bool ValidarReceiverParty(XmlNode node, DocumentoAdjunto doc, XmlNamespaceManager ns)
         {
             var taxScheme = node.SelectSingleNode("cac:PartyTaxScheme", ns);
             if (taxScheme == null)
             {
                 MessageBox.Show("No se encontró el nodo PartyTaxScheme en ReceiverParty.",
                                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                return false;
             }
 
             // Extraer el RegistrationName (nombre del receptor)
@@ -651,9 +649,9 @@ namespace EventosCadenaMercantiles.ViewModels
             {
                 MessageBox.Show("No se encontró el nombre del receptor (RegistrationName) en PartyTaxScheme.",
                                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                return false;
             }
-            doc.Receptor = registrationNameNode.InnerText.Trim();  // Guardamos el nombre en el documento
+            doc.Receptor = registrationNameNode.InnerText.Trim();
 
             // Extraer el CompanyID (NIT)
             var companyIdNode = taxScheme.SelectSingleNode("cbc:CompanyID", ns);
@@ -661,34 +659,34 @@ namespace EventosCadenaMercantiles.ViewModels
             {
                 MessageBox.Show("No se encontró el nodo CompanyID en ReceiverParty.",
                                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                return false;
             }
 
             var nitEnXml = companyIdNode.InnerText;
             var dvEnXml = companyIdNode.Attributes["schemeID"]?.Value;
 
-            var nitEsperado = "75036432"; // Para pruebas, ajusta para que lo leas de configuración o BD
-            var dvEsperado = "7";
+            // Obtener el NIT y DV esperados desde el archivo
+            var (nitEsperado, dvEsperado) = ObtenerNitYdvDesdeArchivo();
 
             if (nitEnXml != nitEsperado)
             {
                 MessageBox.Show($"El NIT recibido ({nitEnXml}) no coincide con el esperado ({nitEsperado}).",
                                 "Error de Validación", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                return false;
             }
 
             if (dvEnXml != dvEsperado)
             {
                 MessageBox.Show($"El DV recibido ({dvEnXml ?? "(no definido)"}) no coincide con el esperado ({dvEsperado}).",
                                 "Error de Validación", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                return false;
             }
 
             doc.Idnit = nitEnXml;
             doc.Dv = dvEnXml;
+
+            return true;
         }
-
-
 
 
 
@@ -763,49 +761,45 @@ namespace EventosCadenaMercantiles.ViewModels
 
         private async void EnviarXml()
         {
-            if (EventoSeleccionado == null)
+            if (EventoSeleccionado.EvenCodigo == "VALIDANDO")
             {
-                MessageBox.Show("Seleccione un documento antes de enviar el evento.");
+                MessageBox.Show("El documento se encuentra en proceso de validación. Por Favor espere");
                 return;
             }
 
-            if (string.IsNullOrEmpty(TipoEvento) || TipoEvento == "Selecione un Evento")
+            var datosEvento = ConstruirDatosEvento();
+            if (datosEvento == null)
             {
-                MessageBox.Show("Seleccione un evento antes de continuar.");
                 return;
             }
-
-            // Si el evento es reclamo, debe seleccionar un código de rechazo
-            if (TipoEventoSeleccionado == "RECLAMO" &&
-                (string.IsNullOrEmpty(CodigoEventoSeleccionado) || CodigoEventoSeleccionado == "Filtrar Código"))
-            {
-                MessageBox.Show("Debe seleccionar un código de rechazo para el evento RECLAMO.");
-                return;
-            }
-
-            var datosEvento = new
-            {
-                Documento = EventoSeleccionado.EvenDocum,
-                Emisor = EventoSeleccionado.EvenReceptor,
-                Identificador = EventoSeleccionado.EvenIdentif,
-                Fecha = EventoSeleccionado.EvenFecha,
-                Evento = TipoEvento,
-                CodigoRechazo = TipoEventoSeleccionado == "RECLAMO" ? CodigoEventoSeleccionado : null
-            };
 
             string jsonData = JsonConvert.SerializeObject(datosEvento, Formatting.Indented);
-
+            string documento = EventoSeleccionado.EvenDocum;
             try
             {
                 using (HttpClient client = new HttpClient())
                 {
+                    //  Añadir solo el encabezado personalizado
+                    client.DefaultRequestHeaders.Add("efacturaAuthorizationToken", "RNimIzV6-emyM-sQ2b-mclA-S9DWbc84jKCV");
+
+                    //  Content-Type se añade en StringContent (NO en Headers directamente)
                     var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync("https://tuservidor.com/api/eventos", content);
+
+                    //  URL de destino
+                    var response = await client.PostAsync("https://apivp.efacturacadena.com/staging/recepcion/estados", content);
 
                     if (response.IsSuccessStatusCode)
                     {
+
+
                         string resultado = await response.Content.ReadAsStringAsync();
-                        MessageBox.Show($"Evento enviado con éxito: {resultado}");
+
+                        //  Guardar en la base de datos(Actualizar evento)
+                        EventosService.ActualizarEventoEnBaseDeDatos(resultado, TipoEvento, documento);
+
+                        //  Enviar correo al emisor
+                        EnvioCorreoService.EnviarCorreoAlEmisor(resultado, TipoEvento, documento);
+                        MessageBox.Show($"Evento {TipoEvento} enviado con éxito: {resultado}");
                     }
                     else
                     {
@@ -819,6 +813,132 @@ namespace EventosCadenaMercantiles.ViewModels
                 MessageBox.Show($"Error de red: {ex.Message}");
             }
         }
+
+
+
+        private object ConstruirDatosEvento()
+        {
+            if (EventoSeleccionado == null)
+            {
+                MessageBox.Show("Seleccione un documento antes de enviar el evento.");
+                return null;
+            }
+
+            if (string.IsNullOrEmpty(TipoEvento) || TipoEvento == "Filtrar Eventos")
+            {
+                MessageBox.Show("Seleccione un evento antes de continuar.");
+                return null;
+            }
+
+            if (TipoEvento == "RECLAMO" &&
+                (string.IsNullOrEmpty(CodigoEventoSeleccionado) || CodigoEventoSeleccionado == "Filtrar Código"))
+            {
+                MessageBox.Show("Debe seleccionar un código de rechazo para el evento RECLAMO.");
+                return null;
+            }
+
+            long timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            var (nitEsperado, dvEsperado) = ObtenerNitYdvDesdeArchivo();
+
+            switch (TipoEvento)
+            {
+                case "030_ACUSE_RECIBO": // ACUSE DE RECIBO
+                    return new
+                    {
+                        supplierId = EventoSeleccionado.EvenIdentif,
+                        receiverId = nitEsperado,
+                        partnershipId = "900770401",  // ID de alianza
+                        documentTypeCode = "01",
+                        documentId = EventoSeleccionado.EvenDocum,
+                        username = "Rm Soft", // Usuario de prueba
+                        eventId = "030", // Evento de acuse de recibo
+                        documentStatus = new
+                        {
+                            statusCode = "030",
+                            statusDate = timestamp,
+                            id = "5001415528",
+                            idType = "13",
+                            firstName = "Rm",
+                            familyName = "Soft"
+                        }
+                    };
+
+                case "032_RECIBO_SERVICIO": // RECIBO DE SERVICIO
+                    return new
+                    {
+                        supplierId = EventoSeleccionado.EvenIdentif,
+                        receiverId = nitEsperado,
+                        partnershipId = "900770401",
+                        documentTypeCode = "01",
+                        documentId = EventoSeleccionado.EvenDocum,
+                        username = "Rm Soft",
+                        eventId = "032", // Código de evento
+                        documentStatus = new
+                        {
+                            statusCode = "032",
+                            statusDate = timestamp
+                        }
+                    };
+
+                case "033_ACEPTACION_EXPRESA": // ACEPTACIÓN EXPRESA
+                    return new
+                    {
+                        supplierId = EventoSeleccionado.EvenIdentif,
+                        receiverId = nitEsperado,
+                        partnershipId = "900770401",
+                        documentTypeCode = "01",
+                        documentId = EventoSeleccionado.EvenDocum,
+                        username = "Rm Soft",
+                        eventId = "033", // Código de evento
+                        documentStatus = new
+                        {
+                            statusCode = "033",
+                            statusDate = timestamp
+                        }
+                    };
+
+                case "034_ACEPTACION_TACITA": // ACEPTACIÓN TÁCITA
+                    return new
+                    {
+                        supplierId = EventoSeleccionado.EvenIdentif,
+                        receiverId = nitEsperado,
+                        partnershipId = "900770401",
+                        documentTypeCode = "01",
+                        documentId = EventoSeleccionado.EvenDocum,
+                        username = "Rm Soft",
+                        eventId = "034", // Código de evento
+                        documentStatus = new
+                        {
+                            statusCode = "034",
+                            statusDate = timestamp
+                        }
+                    };
+
+                case "031_RECLAMO": // RECLAMO
+                    return new
+                    {
+                        supplierId = EventoSeleccionado.EvenIdentif,
+                        receiverId = nitEsperado,
+                        partnershipId = "900770401",
+                        documentTypeCode = "01",
+                        documentId = EventoSeleccionado.EvenDocum,
+                        username = "Rm Soft",
+                        eventId = "031",
+                        documentStatus = new
+                        {
+                            statusCode = "031",
+                            statusDate = timestamp,
+                            claimCode = CodigoEventoSeleccionado
+                        }
+                    };
+
+                default:
+                    MessageBox.Show("Evento desconocido.");
+                    return null;
+            }
+        }
+
+
 
         private bool PuedeEnviarEvento()
         {
@@ -834,6 +954,44 @@ namespace EventosCadenaMercantiles.ViewModels
             return true;
         }
 
+        private (string nit, string dv) ObtenerNitYdvDesdeArchivo()
+        {
+            try
+            {
+                if (!File.Exists(archivoConexion))
+                    throw new FileNotFoundException("El archivo de configuración no existe.");
+
+                var lineas = File.ReadAllLines(archivoConexion);
+                if (lineas.Length < 2)
+                    throw new InvalidOperationException("El archivo de configuración no tiene los datos completos.");
+
+                var datos = lineas[1].Split('-');
+
+                // Si solo tiene el NIT (sin DV)
+                if (datos.Length == 1)
+                {
+                    var nit = datos[0].Trim();
+                    return (nit, ""); // Retorna DV como cadena vacía
+                }
+                // Si tiene NIT y DV (con el guion "-")
+                else if (datos.Length == 2)
+                {
+                    var nit = datos[0].Trim();
+                    var dv = datos[1].Trim();
+                    return (nit, dv);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Formato de NIT y DV inválido en el archivo.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al leer el archivo de configuración: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return (null, null);
+            }
+        }
 
 
         private void SeleccionarEvento(string evento)

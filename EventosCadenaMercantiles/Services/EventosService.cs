@@ -170,6 +170,22 @@ namespace EventosCadenaMercantiles.Services
         }
 
 
+        public static void ActualizarEventoEnBaseDeDatos(string respuesta, string TipoEvento, string documento)
+        {
+            var connection = Conexion.ObtenerConexion();
+            connection.Open();
+
+            var command = new OdbcCommand("UPDATE eventos SET even_fecha = ?, even_evento = ?, even_codigo = ?, even_response = ? WHERE even_docum = ?", connection);
+
+            command.Parameters.AddWithValue("?", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            command.Parameters.AddWithValue("?", TipoEvento); 
+            command.Parameters.AddWithValue("?", "Exitoso"); 
+            command.Parameters.AddWithValue("?", respuesta); 
+            command.Parameters.AddWithValue("?", documento); 
+
+            command.ExecuteNonQuery();
+            connection.Close();
+        }
 
     }
 }

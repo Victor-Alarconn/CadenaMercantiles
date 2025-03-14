@@ -155,7 +155,7 @@
                 </Grid.RowDefinitions>
                 <Label Content="Nombres" Style="{StaticResource LabelStyle}" Margin="0,9,0,0" Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Top"/>
                 <Label Content="Apellidos" Style="{StaticResource LabelStyle}" Grid.Row="4" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                <Label Content="NIT" Style="{StaticResource LabelStyle}" Grid.Row="4" Margin="0,59,0,0" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                <Label Content="NIT - DV" Style="{StaticResource LabelStyle}" Grid.Row="4" Margin="0,59,0,0" HorizontalAlignment="Center" VerticalAlignment="Top"/>
                 <Label Content="MAC" Style="{StaticResource LabelStyle}" Grid.Row="4" Margin="16,103,0,0" VerticalAlignment="Top"/>
                 <Label Content="IP" Style="{StaticResource LabelStyle}" Grid.Row="4" Margin="0,189,0,0" HorizontalAlignment="Center" VerticalAlignment="Top"/>
                 <Label Content="Código" Style="{StaticResource LabelStyle}" Grid.Row="4" Margin="18,152,0,0" VerticalAlignment="Top"/>

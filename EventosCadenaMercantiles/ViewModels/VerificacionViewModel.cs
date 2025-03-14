@@ -3,6 +3,7 @@ using EventosCadenaMercantiles.Vistas;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace EventosCadenaMercantiles.ViewModels
         private string _ip;
         private string _code;
         private string _apellidos;
-
+        private static readonly string archivoConexion = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "empresa.txt");
         public string Nombre
         {
             get => _nombre;
@@ -86,6 +87,36 @@ namespace EventosCadenaMercantiles.ViewModels
                 MessageBox.Show("Hubo un problema al actualizar el archivo env.txt.", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
                 return; // No continuar si falla el guardado en env.txt
+            }
+
+            // Obtener NIT y DV
+            string nit = Nit;
+            string dv = "";
+
+            if (Nit.Contains("-"))
+            {
+                var partes = Nit.Split('-');
+                nit = partes[0].Trim();
+                if (partes.Length > 1)
+                    dv = partes[1].Trim();
+            }
+
+            // Guardar en el archivo empresa.txt
+            try
+            {
+                string nitConDv = !string.IsNullOrWhiteSpace(dv) ? $"{nit}-{dv}" : nit;
+
+                File.WriteAllLines(archivoConexion, new[]
+                {
+            Nombre.Trim(),   // Primera línea = Nombre de la empresa
+            nitConDv.Trim()  // Segunda línea = NIT o NIT-DV
+        });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al guardar los datos de la empresa: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
 
             // Guardar en la base de datos
